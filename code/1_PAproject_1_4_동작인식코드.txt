@@ -1,0 +1,56 @@
+import time
+from google import genai
+
+# 1. API 키 설정 (발급받은 API 키를 입력하세요)
+GOOGLE_API_KEY = "your-key"
+client = genai.Client(api_key=GOOGLE_API_KEY)
+
+# 2. 동영상 파일 경로 설정
+video_path = r"C:\Users\user\Desktop\kim.mp4"
+video_file = None
+
+try:
+    # 3. 파일 업로드
+    print("동영상을 업로드하는 중...")
+    video_file = client.files.upload(file=video_path)
+    print(f"업로드 완료: {video_file.uri}")
+
+    # 4. 동영상 처리 대기 (Google 서버에서 동영상을 분석할 수 있게 처리하는 시간)
+    print("Google 서버에서 동영상을 처리 중입니다. 잠시만 기다려주세요...")
+    while video_file.state.name == "PROCESSING":
+        print(".", end="", flush=True)
+        time.sleep(5)  # 5초마다 상태 확인
+        video_file = client.files.get(name=video_file.name)
+    print()
+
+    # 처리에 실패한 경우
+    if video_file.state.name == "FAILED":
+        raise ValueError("동영상 처리에 실패했습니다. 파일 형식을 확인해주세요.")
+    print("동영상 처리 완료!")
+
+    # 5. 최신 모델 선택 및 분석 요청
+    # gemini-1.5-pro 대신 빠르고 성능이 좋은 최신 모델인 gemini-2.5-flash를 사용합니다.
+    model_id = "gemini-2.5-flash"
+
+    # AI에게 내릴 명령(프롬프트) 작성
+    prompt = "이 동영상에서 인물이 어떤 행동을 하고 있는지 시간 흐름에 따라 상세히 분석해줘."
+
+    print(f"AI({model_id})가 동영상을 분석하고 있습니다...")
+    response = client.models.generate_content(
+        model=model_id,
+        contents=[video_file, prompt]
+    )
+
+    # 6. 결과 출력
+    print("\n==========[분석 결과] ==========")
+    print(response.text)
+    print("=================================")
+
+finally:
+    # 7. (선택 사항) 보안 및 용량 관리를 위해 분석이 끝난 파일 서버에서 삭제
+    if video_file:
+        try:
+            client.files.delete(name=video_file.name)
+            print("\nGoogle AI Studio 서버에서 동영상 파일이 안전하게 삭제되었습니다.")
+        except Exception as e:
+            print(f"\n파일 삭제 중 오류 발생: {e}")

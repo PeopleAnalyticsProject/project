@@ -1,0 +1,45 @@
+import feedparser
+import pandas as pd
+import os
+from datetime import datetime
+
+
+def crawl_google_news_rss(keyword):
+    # 1. RSS URL 설정 (한글 뉴스, 대한민국 지역 기준)
+    # ceid=KR:ko 설정으로 한국어 뉴스를 가져옵니다.
+    rss_url = f"https://news.google.com/rss/search?q={keyword}&hl=ko&gl=KR&ceid=KR:ko"
+
+    # 2. RSS 피드 파싱
+    print(f"'{keyword}' 키워드로 뉴스를 수집 중입니다...")
+    feed = feedparser.parse(rss_url)
+
+    news_list = []
+
+    for entry in feed.entries:
+        news_list.append({
+            'title': entry.title,
+            'link': entry.link,
+            'pubDate': entry.published,
+            'source': entry.source.get('title', 'N/A')
+        })
+
+    # 3. 데이터프레임 변환
+    df = pd.DataFrame(news_list)
+
+    # 4. 저장 경로 설정
+    desktop_path = r"C:\Users\user\Desktop"
+    file_name = f"google_news_{keyword}_{datetime.now().strftime('%Y%m%d_%H%M')}.csv"
+    full_path = os.path.join(desktop_path, file_name)
+
+    # 5. CSV 저장 (인코딩은 엑셀에서 바로 열기 편하도록 'utf-8-sig' 사용)
+    try:
+        df.to_csv(full_path, index=False, encoding='utf-8-sig')
+        print(f"저장이 완료되었습니다: {full_path}")
+    except Exception as e:
+        print(f"파일 저장 중 오류가 발생했습니다: {e}")
+
+
+if __name__ == "__main__":
+    # 원하는 검색어를 입력하세요
+    search_keyword = "직원감시"
+    crawl_google_news_rss(search_keyword)

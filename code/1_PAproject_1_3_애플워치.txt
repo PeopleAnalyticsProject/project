@@ -1,0 +1,69 @@
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import LabelEncoder
+import os
+
+# 1. 파일 경로 설정
+train_path = r'C:\Users\user\Desktop\1_PAproject_1_4_Applewatch.csv'
+predict_path = r'C:\Users\user\Desktop\1_PAproject_1_4_Applewatch_prediction.csv'
+output_path = r'C:\Users\user\Desktop\1_PAproject_1_4_Applewatch_results.xlsx'
+
+# 2. 데이터 로드
+print("데이터를 불러오는 중입니다...")
+train_df = pd.read_csv(train_path)
+predict_df = pd.read_csv(predict_path)
+
+# 3. 변수 설정
+features = [
+    'age', 'gender', 'height', 'weight', 'Applewatch.Steps_LE',
+    'Applewatch.Heart_LE', 'Applewatch.Calories_LE', 'Applewatch.Distance_LE',
+    'EntropyApplewatchHeartPerDay_LE', 'EntropyApplewatchStepsPerDay_LE',
+    'RestingApplewatchHeartrate_LE', 'CorrelationApplewatchHeartrateSteps_LE',
+    'NormalizedApplewatchHeartrate_LE', 'ApplewatchIntensity_LE',
+    'SDNormalizedApplewatchHR_LE', 'ApplewatchStepsXDistance_LE'
+]
+target = 'activity_trimmed'
+
+# 4. 데이터 전처리 (Label Encoding)
+# gender 등 범주형 변수가 문자열일 경우 숫자로 변환합니다.
+le_dict = {}
+for col in ['gender']: # 추가적인 범주형 변수가 있다면 리스트에 추가
+    if train_df[col].dtype == 'object':
+        le = LabelEncoder()
+        train_df[col] = le.fit_transform(train_df[col].astype(str))
+        predict_df[col] = le.transform(predict_df[col].astype(str))
+        le_dict[col] = le
+
+# 결측치 처리 (간단하게 평균값으로 채움)
+train_df = train_df.fillna(train_df.mean(numeric_only=True))
+predict_df = predict_df.fillna(predict_df.mean(numeric_only=True))
+
+# 5. 모델 학습 (Random Forest)
+print("모델 학습을 시작합니다...")
+X_train = train_df[features]
+y_train = train_df[target]
+
+# 랜덤 포레스트 모델 생성 및 학습
+rf_model = RandomForestClassifier(n_estimators=100, random_state=42)
+rf_model.fit(X_train, y_train)
+
+# 6. 예측 수행
+print("예측을 수행하는 중입니다...")
+X_predict = predict_df[features]
+predictions = rf_model.predict(X_predict)
+
+# 7. 결과 저장
+# 예측용 데이터 프레임에 예측 결과를 합칩니다.
+predict_df['Predicted_Activity'] = predictions
+
+# 엑셀 파일로 저장 (openpyxl 라이브러리 필요)
+try:
+    predict_df.to_excel(output_path, index=False)
+    print(f"성공! 예측 결과가 저장되었습니다: {output_path}")
+except Exception as e:
+    print(f"파일 저장 중 오류 발생: {e}")
+
+# 8. 변수 중요도 출력 (피플애널리틱스 관점 분석용)
+importances = pd.Series(rf_model.feature_importances_, index=features).sort_values(ascending=False)
+print("\n[변수 중요도 분석]")
+print(importances)
