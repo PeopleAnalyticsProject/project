@@ -1,0 +1,105 @@
+import insightface
+import numpy as np
+import cv2
+import shutil
+from pathlib import Path
+from collections import defaultdict
+
+SOURCE_DIR = Path(r"C:\Users\user\Desktop\2")
+NAME_DIR = Path(r"C:\Users\user\Desktop\1")
+
+VALID_EXTS = (".jpg", ".jpeg", ".png")
+
+# 코사인 유사도 기준
+SIM_THRESHOLD = 0.35
+
+app = insightface.app.FaceAnalysis(providers=['CPUExecutionProvider'])
+app.prepare(ctx_id=0, det_size=(640, 640))
+
+
+def l2_normalize(x):
+    norm = np.linalg.norm(x)
+    if norm == 0:
+        return x
+    return x / norm
+
+
+def get_embedding(image_path):
+    img = cv2.imread(str(image_path))
+    if img is None:
+        return None
+
+    faces = app.get(img)
+    if len(faces) == 0:
+        return None
+
+    # 얼굴이 여러 개면 가장 큰 얼굴 선택
+    face = max(faces, key=lambda f: (f.bbox[2] - f.bbox[0]) * (f.bbox[3] - f.bbox[1]))
+    emb = face.embedding.astype(np.float32)
+    emb = l2_normalize(emb)
+    return emb
+
+
+def cosine_similarity(a, b):
+    return float(np.dot(a, b))
+
+
+def main():
+    print("기준 얼굴 학습 중...")
+    grouped = defaultdict(list)
+
+    for file in NAME_DIR.iterdir():
+        if file.is_file() and file.suffix.lower() in VALID_EXTS:
+            emb = get_embedding(file)
+            if emb is None:
+                print(f"[건너뜀] {file.name}: 얼굴 인식 실패")
+                continue
+
+            person = ''.join([c for c in file.stem if not c.isdigit()])
+            grouped[person].append(emb)
+            print(f"[등록] {file.name} -> {person}")
+
+    if not grouped:
+        print("등록된 기준 얼굴이 없습니다.")
+        return
+
+    references = {}
+    for person, embs in grouped.items():
+        avg_emb = np.mean(embs, axis=0)
+        references[person] = l2_normalize(avg_emb)
+
+    print("\n사진 분류 시작")
+
+    unknown_dir = SOURCE_DIR / "unknown"
+    unknown_dir.mkdir(exist_ok=True)
+
+    for file in SOURCE_DIR.iterdir():
+        if not (file.is_file() and file.suffix.lower() in VALID_EXTS):
+            continue
+
+        emb = get_embedding(file)
+        if emb is None:
+            print(f"[얼굴 없음] {file.name}")
+            continue
+
+        best_person = None
+        best_sim = -1.0
+
+        for person, ref in references.items():
+            sim = cosine_similarity(emb, ref)
+            if sim > best_sim:
+                best_sim = sim
+                best_person = person
+
+        if best_sim >= SIM_THRESHOLD:
+            dest = SOURCE_DIR / best_person
+            dest.mkdir(exist_ok=True)
+            shutil.move(str(file), str(dest / file.name))
+            print(f"[성공] {file.name} -> {best_person} (sim={best_sim:.4f})")
+        else:
+            shutil.move(str(file), str(unknown_dir / file.name))
+            print(f"[미분류] {file.name} -> unknown (sim={best_sim:.4f})")
+
+
+if __name__ == "__main__":
+    main()
