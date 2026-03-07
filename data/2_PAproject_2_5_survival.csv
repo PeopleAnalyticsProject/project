@@ -1,0 +1,501 @@
+employee_id,age,gender,department,education_level,years_at_company,job_role,job_satisfaction,salary,work_life_balance,remote_work,performance_score,left_company,survival_time
+1,53,Male,Marketing,PhD,5,Staff,3,56417,3,1,55,1,4
+2,39,Female,Sales,Bachelor,6,Staff,2,48693,5,0,81,1,4
+3,32,Male,IT,High School,13,Staff,5,109674,4,1,40,1,4
+4,45,Female,Marketing,Master,9,Intern,1,83161,5,0,83,1,7
+5,43,Male,Marketing,PhD,15,Intern,3,32169,3,0,15,1,1
+6,47,Male,Marketing,High School,14,Intern,3,114092,4,0,73,1,7
+7,35,Male,IT,High School,7,Manager,1,52052,1,0,52,1,4
+8,35,Female,IT,Master,2,Intern,5,101849,1,0,74,1,2
+9,48,Male,Finance,Master,7,Executive,4,103851,3,0,95,1,3
+10,48,Male,Sales,Bachelor,6,Executive,1,38036,5,0,53,1,1
+11,27,Male,HR,PhD,17,Staff,5,61778,2,1,87,0,17
+12,46,Male,Marketing,PhD,2,Intern,1,57734,3,0,52,1,1
+13,26,Female,Finance,Master,3,Executive,1,53173,4,1,30,1,3
+14,48,Female,HR,Bachelor,5,Staff,2,60403,4,0,33,1,4
+15,54,Male,Finance,PhD,5,Intern,5,96321,1,1,57,1,4
+16,26,Female,IT,Master,1,Manager,4,101675,4,0,52,1,1
+17,45,Male,Marketing,High School,8,Executive,2,36344,3,0,9,1,4
+18,57,Male,HR,PhD,12,Manager,1,48800,4,0,54,1,4
+19,36,Male,HR,Bachelor,4,Intern,1,55372,3,0,1,0,4
+20,46,Female,HR,Bachelor,13,Executive,1,91516,2,0,44,1,7
+21,49,Female,HR,Bachelor,15,Intern,5,50538,1,1,99,1,4
+22,51,Female,HR,High School,11,Manager,5,93918,4,1,75,1,10
+23,52,Female,Finance,PhD,10,Executive,2,44973,3,1,98,1,4
+24,40,Female,Marketing,PhD,3,Manager,4,101155,5,1,80,1,3
+25,39,Female,IT,High School,14,Intern,2,89500,1,0,9,0,14
+26,27,Female,IT,PhD,16,Intern,3,66575,2,0,32,1,4
+27,31,Female,IT,High School,10,Manager,1,72261,3,0,15,1,4
+28,45,Female,IT,High School,10,Executive,1,57716,2,0,12,1,2
+29,33,Male,Finance,High School,12,Manager,1,33236,2,0,97,1,4
+30,42,Female,Sales,Bachelor,9,Intern,2,45848,4,0,78,1,4
+31,28,Female,Marketing,PhD,1,Manager,2,32352,4,0,57,1,4
+32,49,Female,HR,High School,5,Intern,1,31932,3,0,8,1,1
+33,38,Female,Sales,PhD,8,Manager,2,106449,5,1,72,1,4
+34,33,Female,IT,Bachelor,11,Executive,5,38556,3,1,27,1,2
+35,50,Female,Sales,High School,12,Executive,5,116836,5,0,62,1,7
+36,26,Female,Marketing,Master,1,Manager,2,35498,2,1,12,1,1
+37,44,Female,HR,Bachelor,11,Manager,1,106118,1,1,65,1,4
+38,52,Female,HR,Master,5,Executive,2,80098,3,0,42,0,5
+39,31,Female,Marketing,PhD,15,Intern,2,94386,3,0,62,1,13
+40,32,Female,Marketing,PhD,5,Executive,2,39569,5,0,11,0,5
+41,59,Male,IT,Bachelor,12,Intern,3,86882,2,1,43,1,4
+42,38,Male,HR,PhD,5,Manager,5,100393,2,1,95,0,5
+43,41,Female,Sales,Master,17,Manager,4,30340,5,0,17,1,5
+44,28,Female,Finance,High School,17,Intern,4,73949,2,0,97,1,4
+45,26,Male,Finance,High School,12,Manager,3,112302,4,0,32,1,5
+46,30,Female,Marketing,High School,15,Intern,2,92443,1,0,93,1,12
+47,28,Male,IT,Bachelor,15,Staff,3,104027,3,0,85,1,12
+48,53,Male,Finance,PhD,6,Executive,3,30138,1,1,85,0,6
+49,42,Male,HR,Master,12,Staff,1,30358,3,1,40,1,7
+50,50,Male,Marketing,PhD,18,Intern,5,105250,4,1,23,1,4
+51,58,Male,Sales,PhD,14,Executive,4,115376,2,1,56,1,8
+52,34,Female,Marketing,PhD,2,Intern,2,60654,5,1,6,1,1
+53,38,Male,Sales,High School,9,Executive,4,55879,4,0,86,1,4
+54,55,Female,Marketing,Master,5,Executive,4,111532,1,1,50,1,2
+55,39,Female,Marketing,Master,1,Executive,5,85778,5,0,37,0,1
+56,32,Male,Marketing,PhD,3,Executive,4,67772,2,1,64,0,3
+57,38,Male,Sales,High School,6,Intern,4,88478,4,0,54,1,6
+58,47,Female,Sales,High School,5,Executive,3,94353,5,1,72,1,3
+59,45,Male,Marketing,Master,5,Executive,5,56762,4,0,49,1,5
+60,40,Male,Finance,High School,1,Staff,1,43283,4,0,99,1,4
+61,42,Female,IT,High School,17,Manager,2,93922,2,0,11,1,4
+62,48,Female,IT,High School,19,Manager,4,69420,3,0,88,1,7
+63,50,Male,IT,Bachelor,14,Staff,2,85568,5,1,49,1,3
+64,49,Female,Sales,PhD,12,Staff,1,115090,2,1,21,1,4
+65,53,Male,Sales,Master,10,Intern,2,50219,4,0,66,0,10
+66,39,Male,Finance,Master,18,Intern,1,87169,2,0,63,0,18
+67,25,Male,IT,Bachelor,11,Intern,3,104965,3,0,83,1,4
+68,49,Female,IT,PhD,2,Staff,4,76840,5,0,28,0,2
+69,31,Female,Marketing,Master,18,Staff,1,74695,3,0,17,1,6
+70,33,Female,Sales,High School,7,Executive,2,114754,1,1,6,1,4
+71,48,Female,IT,Master,15,Intern,4,107988,5,0,19,1,4
+72,25,Female,Finance,High School,11,Intern,3,88342,3,0,56,1,4
+73,32,Male,Finance,Bachelor,18,Intern,4,48951,4,0,28,1,4
+74,48,Male,IT,High School,12,Manager,1,31307,5,0,66,1,9
+75,35,Male,Sales,Master,6,Executive,3,110388,5,0,38,1,1
+76,41,Male,Finance,Master,13,Intern,2,65428,2,1,37,1,4
+77,32,Female,Marketing,Master,16,Intern,3,105774,4,0,68,1,4
+78,59,Male,Finance,Bachelor,18,Intern,3,68975,1,0,86,1,4
+79,59,Female,HR,Bachelor,10,Manager,5,31140,3,0,90,1,3
+80,57,Male,HR,PhD,8,Manager,3,54842,2,0,49,1,4
+81,29,Female,Sales,Master,18,Staff,3,56421,3,0,43,1,18
+82,52,Female,IT,High School,1,Executive,4,31708,1,1,36,1,1
+83,31,Male,Sales,Bachelor,8,Staff,2,33630,1,1,58,1,4
+84,33,Male,Sales,Master,6,Executive,4,49595,5,0,13,1,4
+85,32,Male,Sales,Master,5,Manager,4,106021,1,0,52,1,4
+86,36,Male,Sales,Bachelor,15,Intern,1,58308,3,0,58,1,1
+87,58,Female,Marketing,PhD,15,Staff,4,74789,4,0,32,1,1
+88,57,Male,Marketing,Bachelor,2,Intern,5,85690,4,1,81,1,4
+89,47,Male,Finance,Bachelor,1,Staff,5,56086,5,1,100,0,1
+90,48,Female,HR,High School,11,Manager,1,46859,3,0,60,1,5
+91,59,Male,Sales,High School,10,Manager,2,37684,3,0,83,1,4
+92,46,Male,Finance,PhD,18,Manager,2,31207,1,0,58,1,1
+93,51,Male,HR,Master,18,Staff,4,76099,3,1,99,1,3
+94,59,Male,IT,Bachelor,17,Executive,4,97496,2,1,56,1,9
+95,25,Male,Marketing,PhD,8,Staff,4,96093,1,0,28,1,6
+96,59,Female,HR,High School,15,Executive,2,59689,2,0,1,1,15
+97,38,Male,IT,Bachelor,8,Staff,3,78651,5,1,42,1,3
+98,27,Male,HR,Master,17,Staff,5,43893,4,0,82,1,17
+99,25,Male,Marketing,High School,12,Manager,3,96418,5,0,48,1,7
+100,29,Male,Marketing,High School,8,Intern,3,90011,4,0,40,1,4
+101,50,Male,Finance,High School,14,Intern,2,68635,5,1,97,1,4
+102,38,Female,Sales,PhD,4,Executive,3,86115,3,0,63,0,4
+103,51,Male,HR,Master,1,Intern,1,108405,2,0,76,1,1
+104,33,Female,HR,Bachelor,1,Staff,4,102702,4,1,72,0,1
+105,39,Female,IT,PhD,19,Staff,1,108518,1,0,88,1,5
+106,39,Male,Marketing,PhD,16,Manager,5,102805,2,0,80,1,10
+107,50,Male,HR,PhD,14,Manager,4,88954,1,0,4,1,5
+108,37,Male,Marketing,High School,16,Intern,3,58064,2,0,38,1,1
+109,56,Male,HR,Master,5,Executive,5,109063,2,1,27,1,5
+110,56,Female,Finance,PhD,9,Intern,4,32454,5,0,9,1,9
+111,28,Male,Sales,Bachelor,2,Intern,3,50878,4,0,16,1,2
+112,54,Male,HR,Master,18,Intern,1,81098,4,0,56,1,4
+113,47,Male,Marketing,Bachelor,6,Intern,4,92154,2,1,76,1,4
+114,39,Male,Finance,Master,9,Staff,3,42991,3,1,31,1,4
+115,53,Male,HR,Bachelor,1,Executive,1,98344,3,0,88,1,4
+116,37,Male,IT,High School,9,Staff,5,66593,1,0,14,1,6
+117,56,Female,Sales,PhD,16,Executive,5,66304,1,1,25,1,4
+118,31,Female,HR,Bachelor,13,Manager,5,60386,5,0,34,1,4
+119,46,Male,Finance,Master,9,Intern,5,85220,2,1,67,1,6
+120,52,Male,IT,PhD,13,Staff,2,99338,1,1,24,1,5
+121,26,Male,Finance,PhD,9,Executive,4,51083,1,1,73,1,4
+122,30,Female,Finance,Master,11,Manager,4,48354,2,0,26,0,11
+123,52,Male,IT,Bachelor,4,Manager,2,52190,5,0,20,1,2
+124,52,Female,Finance,High School,2,Intern,3,36142,1,1,64,1,1
+125,44,Male,IT,High School,6,Executive,3,58398,5,0,10,1,4
+126,54,Male,HR,Bachelor,14,Staff,5,81971,4,0,83,1,4
+127,35,Male,IT,PhD,4,Intern,1,71862,5,1,67,1,2
+128,52,Male,IT,PhD,6,Staff,3,83410,3,1,24,1,4
+129,49,Female,Sales,PhD,19,Manager,1,49503,3,0,5,1,4
+130,57,Female,IT,PhD,6,Staff,4,78456,5,0,67,1,5
+131,25,Male,IT,Bachelor,2,Staff,1,112035,3,0,58,1,2
+132,51,Male,HR,PhD,18,Intern,4,38016,4,1,27,0,18
+133,37,Female,Sales,Master,13,Staff,2,32384,2,1,80,0,13
+134,27,Female,Marketing,PhD,9,Intern,2,92320,3,0,15,1,4
+135,30,Female,HR,High School,19,Manager,5,45072,3,0,35,1,8
+136,32,Female,HR,PhD,13,Intern,3,110018,5,1,76,1,4
+137,51,Male,Marketing,Bachelor,11,Intern,5,70510,4,0,53,1,4
+138,33,Female,IT,High School,1,Executive,4,78933,2,0,44,1,1
+139,57,Male,Finance,Bachelor,7,Staff,5,51826,5,1,26,1,1
+140,48,Female,Sales,Bachelor,15,Manager,1,98026,5,0,47,1,3
+141,39,Female,Finance,High School,1,Intern,4,55518,4,1,34,1,1
+142,56,Female,Marketing,Bachelor,12,Manager,2,54045,2,0,87,1,4
+143,56,Female,HR,Bachelor,7,Executive,3,80876,4,0,95,1,4
+144,48,Female,HR,PhD,15,Staff,4,81919,2,1,50,0,15
+145,36,Male,Sales,Master,19,Intern,4,57103,4,0,84,1,10
+146,26,Male,HR,Bachelor,1,Staff,1,66188,5,1,12,1,4
+147,27,Female,HR,Bachelor,17,Executive,3,35845,5,0,87,1,14
+148,41,Female,Sales,Bachelor,17,Executive,2,116698,1,0,4,0,17
+149,26,Male,Sales,PhD,3,Manager,4,66674,3,0,87,1,4
+150,26,Female,Marketing,Master,12,Intern,4,49337,4,0,48,1,1
+151,52,Female,HR,High School,6,Manager,1,52313,1,0,55,1,4
+152,47,Male,HR,PhD,11,Executive,5,56943,3,0,1,1,10
+153,56,Female,Marketing,PhD,3,Staff,2,107949,4,0,89,1,1
+154,57,Female,IT,Master,8,Manager,3,30276,2,0,66,0,8
+155,25,Male,IT,Master,14,Manager,4,81151,3,1,30,0,14
+156,43,Male,IT,PhD,14,Staff,4,47611,5,1,3,1,4
+157,26,Male,Marketing,High School,10,Manager,2,41944,1,1,21,1,4
+158,50,Female,HR,PhD,2,Staff,5,82887,3,0,89,1,4
+159,56,Male,Marketing,Master,14,Intern,4,111442,3,0,84,1,3
+160,30,Male,Marketing,High School,9,Staff,2,79847,5,1,49,1,4
+161,56,Male,IT,Master,3,Intern,1,88653,4,0,86,1,2
+162,28,Male,Finance,High School,8,Staff,5,116072,2,0,85,1,3
+163,35,Male,HR,Bachelor,16,Executive,3,86622,5,1,62,1,16
+164,41,Male,IT,Master,2,Executive,4,57810,2,1,97,1,4
+165,48,Female,Finance,Master,6,Intern,2,107842,4,0,38,0,6
+166,29,Female,Finance,PhD,12,Intern,1,40503,3,0,15,1,12
+167,58,Male,Sales,Master,5,Executive,3,114761,2,1,52,1,4
+168,30,Male,HR,Master,2,Intern,2,66976,1,0,79,1,2
+169,46,Male,Finance,Bachelor,16,Staff,2,41590,1,1,46,1,13
+170,35,Female,IT,Master,5,Staff,3,40886,5,1,25,0,5
+171,40,Female,Sales,Bachelor,15,Executive,1,42866,4,1,21,1,1
+172,57,Female,HR,Bachelor,12,Manager,1,96624,5,0,88,1,8
+173,33,Female,Marketing,Bachelor,4,Staff,5,98899,5,0,5,1,4
+174,30,Female,IT,Bachelor,15,Intern,4,62792,5,1,70,0,15
+175,40,Female,Finance,High School,11,Manager,3,39764,1,1,47,1,4
+176,53,Female,Finance,PhD,16,Manager,3,116156,1,1,87,1,7
+177,27,Female,IT,High School,6,Staff,3,72727,5,0,68,1,4
+178,44,Female,Finance,Master,14,Staff,1,108471,1,0,91,1,11
+179,43,Male,Sales,High School,18,Manager,4,38068,4,1,18,0,18
+180,50,Male,HR,High School,12,Manager,5,37295,5,1,21,1,10
+181,27,Male,Sales,Master,11,Executive,2,71160,1,1,92,0,11
+182,43,Male,Finance,Master,13,Intern,2,41390,2,1,99,1,11
+183,44,Female,Marketing,Master,11,Executive,3,50131,5,0,86,1,6
+184,56,Female,HR,High School,16,Staff,4,105969,5,1,23,1,4
+185,31,Male,HR,High School,15,Executive,1,45038,4,1,64,1,8
+186,57,Female,IT,Master,15,Executive,4,82327,3,0,67,1,12
+187,42,Male,IT,PhD,4,Executive,4,107064,3,1,40,1,3
+188,25,Female,Marketing,PhD,11,Executive,1,51281,4,0,10,1,4
+189,35,Male,HR,Bachelor,19,Intern,3,84189,4,0,89,1,4
+190,52,Female,Marketing,Master,15,Intern,4,78511,4,1,52,1,5
+191,49,Female,IT,Bachelor,4,Manager,2,38605,3,0,72,1,2
+192,47,Male,IT,PhD,13,Staff,1,31381,4,0,75,1,1
+193,55,Female,HR,Bachelor,19,Executive,5,96634,1,0,61,1,4
+194,54,Male,Sales,Master,2,Manager,3,49810,5,0,64,1,4
+195,59,Male,Finance,Master,14,Manager,1,54322,5,0,5,1,4
+196,31,Male,IT,Master,4,Manager,5,71869,2,0,53,1,4
+197,40,Male,IT,High School,16,Intern,5,62955,2,1,55,1,4
+198,50,Female,Sales,Bachelor,14,Executive,4,91388,5,0,37,1,9
+199,26,Female,Sales,PhD,15,Executive,4,40207,1,0,56,1,13
+200,25,Female,Marketing,PhD,3,Staff,4,117329,3,0,59,1,3
+201,36,Male,Marketing,PhD,8,Executive,1,97628,3,1,93,1,4
+202,29,Female,Finance,High School,16,Executive,1,58220,1,0,69,0,16
+203,56,Male,Finance,High School,10,Manager,3,114050,3,1,73,1,4
+204,33,Female,HR,Master,4,Staff,4,104085,4,1,59,1,4
+205,59,Female,Marketing,PhD,18,Executive,5,52031,5,1,2,0,18
+206,43,Female,IT,High School,2,Intern,2,100721,5,0,65,1,2
+207,40,Male,Marketing,Master,17,Executive,3,110807,1,1,60,1,4
+208,27,Female,IT,PhD,13,Manager,1,101312,3,0,51,1,6
+209,44,Female,Sales,Bachelor,4,Intern,3,89766,2,1,30,1,4
+210,48,Male,Marketing,Master,11,Manager,3,42449,2,1,11,1,10
+211,57,Female,Sales,High School,7,Executive,3,119833,3,0,92,1,1
+212,48,Male,Finance,High School,12,Intern,3,86699,2,0,76,1,4
+213,35,Female,Finance,Master,10,Staff,2,111253,1,0,39,1,4
+214,32,Male,HR,Master,7,Staff,4,76092,1,1,90,1,4
+215,44,Male,Marketing,High School,13,Intern,5,93671,3,0,77,1,12
+216,59,Female,Sales,Bachelor,7,Intern,3,40350,2,0,72,1,6
+217,49,Male,IT,PhD,17,Manager,3,98487,1,0,63,1,11
+218,59,Male,Finance,Bachelor,10,Intern,3,47622,1,1,64,1,10
+219,49,Male,Finance,Master,10,Manager,4,100263,4,1,61,1,2
+220,53,Male,IT,Bachelor,4,Executive,1,83117,4,1,54,1,4
+221,42,Male,Sales,High School,4,Manager,1,88394,1,1,92,1,3
+222,42,Male,Sales,Master,7,Intern,2,53782,3,0,94,1,4
+223,26,Female,Marketing,PhD,1,Intern,1,58454,5,0,73,1,4
+224,59,Male,Marketing,High School,12,Executive,3,97904,5,1,95,1,4
+225,40,Male,HR,High School,13,Intern,3,45592,1,0,58,1,4
+226,57,Female,Finance,PhD,10,Intern,3,52173,1,0,85,1,4
+227,28,Female,Marketing,PhD,15,Staff,2,63204,1,0,56,1,13
+228,57,Female,Sales,Bachelor,13,Staff,3,65596,3,0,34,1,4
+229,38,Female,IT,Master,9,Executive,1,64324,4,0,31,1,9
+230,45,Female,Sales,PhD,9,Manager,4,91202,1,1,52,1,4
+231,44,Female,Finance,PhD,15,Staff,4,119400,1,0,89,1,4
+232,32,Female,Sales,Master,10,Manager,5,60750,2,0,76,0,10
+233,31,Male,HR,PhD,10,Intern,1,106112,3,0,1,1,4
+234,27,Male,Finance,PhD,8,Staff,3,46566,1,1,55,1,5
+235,41,Female,IT,Bachelor,16,Executive,4,37190,2,0,22,1,9
+236,57,Male,HR,High School,17,Executive,1,118607,5,1,40,1,4
+237,36,Male,Finance,High School,5,Executive,4,68333,1,1,1,1,4
+238,46,Male,IT,High School,4,Staff,3,110905,1,0,65,1,2
+239,46,Female,HR,High School,18,Manager,4,119571,2,1,63,1,4
+240,54,Female,HR,PhD,19,Intern,5,31589,3,1,54,0,19
+241,32,Male,Finance,Master,4,Manager,5,55235,1,1,42,1,3
+242,51,Female,Marketing,Master,7,Manager,4,30159,5,1,21,1,4
+243,51,Male,HR,Bachelor,10,Intern,1,42145,1,0,79,1,6
+244,58,Male,HR,Bachelor,18,Intern,1,110909,5,0,81,1,4
+245,45,Male,IT,PhD,19,Staff,1,61921,4,0,22,0,19
+246,54,Male,Sales,Master,4,Staff,4,46237,4,0,38,1,3
+247,57,Female,Finance,Master,10,Staff,1,38244,5,1,99,0,10
+248,52,Female,Finance,High School,1,Staff,3,44743,3,0,80,1,1
+249,57,Female,Marketing,PhD,18,Staff,5,76101,1,1,8,1,10
+250,29,Male,Marketing,PhD,5,Intern,3,114227,1,1,62,1,4
+251,43,Female,Finance,High School,15,Manager,1,86378,4,1,47,0,15
+252,28,Male,Marketing,PhD,17,Staff,3,101126,5,1,17,1,7
+253,59,Female,IT,PhD,3,Staff,1,86071,1,0,17,1,3
+254,41,Male,Finance,Bachelor,12,Manager,4,101121,1,0,90,1,4
+255,52,Male,Marketing,Master,2,Staff,3,104763,3,0,13,1,4
+256,54,Male,Finance,PhD,1,Manager,4,42237,2,0,17,1,1
+257,53,Female,Sales,Bachelor,17,Manager,4,45649,4,0,38,1,4
+258,30,Female,HR,Master,16,Intern,2,67713,4,0,81,0,16
+259,59,Female,Finance,High School,5,Executive,1,103463,2,1,78,1,2
+260,48,Female,HR,Bachelor,15,Intern,5,75409,1,0,45,1,8
+261,53,Male,Marketing,Bachelor,3,Executive,1,78766,3,0,6,1,2
+262,55,Female,HR,Master,7,Executive,5,76154,3,1,35,0,7
+263,59,Female,Finance,High School,11,Executive,1,37016,4,0,14,1,10
+264,57,Male,Sales,Bachelor,10,Staff,4,109563,3,0,72,1,7
+265,45,Male,Marketing,PhD,9,Intern,3,78688,2,1,61,1,4
+266,56,Male,Finance,PhD,14,Executive,3,119678,1,1,15,1,14
+267,47,Female,Marketing,PhD,13,Manager,2,84238,2,1,54,1,4
+268,57,Male,IT,High School,2,Staff,5,88608,5,0,27,1,1
+269,27,Male,HR,Bachelor,3,Intern,5,119081,4,1,13,1,3
+270,42,Male,IT,PhD,7,Executive,5,61897,3,1,31,1,4
+271,49,Female,Finance,High School,18,Manager,4,80961,5,0,35,1,2
+272,55,Male,Sales,PhD,3,Intern,5,98703,3,1,60,1,4
+273,27,Female,Marketing,Master,10,Intern,3,74757,1,1,6,0,10
+274,48,Female,HR,Bachelor,7,Staff,4,56917,1,0,69,1,2
+275,56,Male,Marketing,Bachelor,9,Intern,1,52736,1,0,86,1,5
+276,46,Male,Finance,High School,17,Staff,5,57990,3,1,58,1,4
+277,47,Female,Marketing,High School,11,Executive,5,92551,5,1,49,1,4
+278,26,Male,HR,Bachelor,7,Staff,1,88161,1,0,23,1,4
+279,51,Male,Finance,PhD,14,Manager,5,109623,5,1,89,1,2
+280,26,Female,Marketing,PhD,19,Staff,1,52440,3,0,34,1,4
+281,50,Female,Sales,Master,4,Manager,4,65205,5,0,26,1,2
+282,41,Male,Finance,PhD,6,Staff,3,110811,3,0,47,1,4
+283,57,Female,Finance,High School,10,Intern,1,85103,3,1,5,1,1
+284,33,Male,Sales,High School,7,Executive,2,100812,4,1,90,1,6
+285,53,Male,IT,PhD,13,Manager,1,71627,3,0,20,1,4
+286,50,Male,HR,High School,14,Staff,5,49008,3,0,6,1,5
+287,59,Female,IT,Bachelor,4,Staff,4,101274,2,0,70,0,4
+288,49,Male,Marketing,Bachelor,8,Staff,4,62402,1,1,59,1,8
+289,48,Male,Sales,PhD,5,Intern,1,83384,4,1,64,1,4
+290,37,Male,IT,Bachelor,1,Intern,3,35793,4,1,18,1,4
+291,31,Female,Finance,Bachelor,4,Manager,2,35571,4,1,4,1,4
+292,44,Female,Marketing,Master,3,Manager,4,46209,2,1,17,1,3
+293,25,Female,Marketing,Master,9,Intern,5,73148,3,0,14,1,8
+294,32,Female,IT,Bachelor,8,Manager,5,32224,1,0,78,1,5
+295,40,Female,IT,PhD,1,Executive,3,78695,5,0,13,0,1
+296,38,Male,Sales,Master,6,Executive,4,62441,3,1,7,1,4
+297,36,Female,HR,High School,9,Intern,1,69129,2,1,44,1,4
+298,47,Female,IT,High School,7,Manager,5,92368,3,0,15,1,4
+299,39,Female,IT,High School,4,Staff,3,74760,3,1,19,1,2
+300,52,Male,Finance,PhD,13,Executive,4,53478,2,0,63,1,1
+301,58,Female,Marketing,Bachelor,17,Intern,4,101854,4,0,35,1,4
+302,26,Female,HR,High School,2,Manager,4,115716,4,1,81,1,4
+303,56,Male,Finance,PhD,5,Intern,4,42180,1,1,35,1,3
+304,47,Female,Sales,Master,12,Staff,4,45372,1,1,19,1,4
+305,46,Male,Sales,Bachelor,8,Executive,5,59796,4,0,20,1,3
+306,49,Male,IT,Master,6,Intern,3,88272,5,0,100,0,6
+307,46,Male,IT,PhD,8,Intern,4,119963,3,1,35,1,4
+308,46,Male,Sales,High School,18,Intern,2,84040,5,0,32,1,17
+309,30,Male,IT,High School,3,Staff,2,105357,3,0,48,1,2
+310,39,Female,HR,PhD,12,Intern,3,101368,4,1,44,1,6
+311,57,Male,IT,High School,3,Staff,1,108356,1,0,24,1,4
+312,32,Male,Marketing,Bachelor,6,Staff,1,46211,1,1,61,1,4
+313,29,Female,IT,PhD,2,Staff,1,35842,5,1,17,1,2
+314,28,Male,Finance,Master,12,Executive,2,93115,1,0,71,1,11
+315,30,Female,HR,PhD,2,Executive,1,96852,4,0,50,1,4
+316,56,Female,Finance,Bachelor,6,Intern,5,75968,5,1,65,1,4
+317,54,Female,Finance,Bachelor,17,Intern,4,47508,3,1,99,1,10
+318,59,Male,Marketing,PhD,3,Executive,2,52005,1,1,32,1,3
+319,40,Male,HR,PhD,2,Manager,3,84575,2,1,36,1,4
+320,37,Male,HR,High School,8,Executive,3,110742,1,1,13,1,4
+321,54,Female,HR,Bachelor,12,Staff,4,48971,3,1,70,1,12
+322,43,Male,HR,PhD,4,Executive,2,55599,5,0,58,0,4
+323,41,Male,HR,PhD,5,Staff,1,117592,3,0,14,1,2
+324,43,Male,Marketing,Bachelor,13,Intern,1,96914,2,0,37,1,10
+325,52,Female,IT,PhD,15,Manager,5,97055,4,0,79,0,15
+326,50,Female,Finance,High School,16,Intern,5,117697,1,0,68,1,3
+327,50,Male,HR,Bachelor,10,Staff,1,35355,5,0,40,1,4
+328,47,Male,IT,High School,16,Staff,3,84120,4,1,59,1,4
+329,33,Male,IT,High School,12,Staff,3,104619,3,0,80,1,4
+330,36,Male,Finance,High School,17,Manager,5,68342,5,0,92,1,10
+331,25,Female,Marketing,High School,16,Executive,4,115992,4,0,16,1,2
+332,25,Female,Sales,Bachelor,12,Intern,1,108860,5,0,62,1,4
+333,58,Female,Sales,High School,8,Intern,5,32257,2,0,4,1,6
+334,56,Female,IT,High School,3,Executive,5,57364,2,0,45,1,4
+335,49,Male,Finance,PhD,16,Intern,1,54972,1,0,90,1,7
+336,25,Male,Sales,Bachelor,13,Manager,1,56654,1,1,28,1,4
+337,40,Male,IT,Bachelor,19,Intern,3,110769,2,1,96,1,4
+338,29,Female,Marketing,Master,8,Staff,4,111423,5,1,66,1,4
+339,46,Male,Sales,Bachelor,5,Executive,4,59320,2,1,31,1,2
+340,53,Female,IT,Bachelor,8,Manager,1,50808,1,0,3,1,6
+341,27,Female,IT,Master,12,Executive,2,82389,2,1,8,1,1
+342,36,Male,HR,Bachelor,1,Manager,5,64773,2,1,24,0,1
+343,50,Male,Marketing,Bachelor,6,Staff,5,81168,5,0,15,1,1
+344,40,Male,HR,Bachelor,18,Executive,1,57747,4,1,43,1,9
+345,46,Female,Finance,Bachelor,8,Intern,2,106396,1,0,31,1,4
+346,53,Male,HR,Master,7,Manager,3,113692,5,1,73,0,7
+347,38,Female,HR,Bachelor,1,Executive,1,87505,2,1,45,1,4
+348,52,Male,Sales,Bachelor,16,Intern,1,115896,2,0,66,1,3
+349,29,Female,IT,Master,12,Executive,5,48135,4,1,8,0,12
+350,54,Female,Marketing,PhD,6,Executive,1,77377,1,1,71,1,4
+351,29,Male,HR,High School,2,Executive,1,53554,1,1,57,1,2
+352,36,Female,Marketing,PhD,14,Manager,1,92491,3,0,80,1,4
+353,40,Female,HR,Master,4,Intern,5,85621,1,1,99,1,4
+354,50,Male,Finance,High School,1,Staff,3,88283,4,0,30,1,4
+355,50,Female,HR,Master,18,Manager,3,115140,3,0,74,1,9
+356,45,Male,Sales,Master,13,Manager,1,46923,3,0,18,1,4
+357,57,Female,IT,Bachelor,2,Manager,5,77591,2,1,69,0,2
+358,54,Male,Finance,High School,9,Staff,3,92261,2,1,93,1,6
+359,47,Male,HR,Bachelor,2,Intern,3,84336,1,1,39,1,2
+360,34,Female,Marketing,High School,9,Intern,3,104083,3,1,60,1,7
+361,29,Female,Finance,Master,1,Intern,5,90948,2,0,98,1,1
+362,58,Female,Finance,Master,11,Executive,5,63002,4,0,43,1,4
+363,55,Female,HR,PhD,3,Executive,1,110098,2,0,45,1,2
+364,34,Female,Finance,High School,4,Executive,4,103016,2,0,23,1,4
+365,43,Male,Marketing,Bachelor,18,Staff,3,56672,3,0,69,1,16
+366,56,Female,Finance,PhD,6,Executive,4,34213,3,0,94,0,6
+367,25,Male,Marketing,PhD,3,Staff,5,40293,5,0,6,1,4
+368,29,Male,HR,PhD,11,Intern,5,85860,4,0,56,1,7
+369,28,Female,IT,Bachelor,15,Executive,5,92507,3,0,4,1,5
+370,40,Male,Finance,PhD,5,Executive,4,87134,1,0,93,1,1
+371,48,Male,IT,Bachelor,10,Manager,5,32100,4,1,23,1,3
+372,40,Male,Marketing,PhD,12,Staff,1,91997,4,1,6,1,5
+373,26,Male,Finance,Bachelor,15,Intern,5,58172,3,1,32,1,4
+374,52,Female,Sales,Master,17,Manager,2,50132,4,0,18,1,5
+375,56,Male,IT,Master,10,Manager,4,48199,3,0,15,1,4
+376,51,Female,Finance,Master,6,Intern,2,66609,2,1,40,1,2
+377,44,Female,IT,Master,18,Manager,5,72965,5,0,96,1,8
+378,48,Male,Finance,Master,13,Staff,1,38016,2,0,73,1,13
+379,36,Female,HR,PhD,3,Staff,3,69779,3,0,74,1,1
+380,59,Female,IT,PhD,10,Executive,5,61881,3,0,84,1,1
+381,57,Female,Sales,PhD,14,Manager,1,112594,2,0,6,1,2
+382,57,Male,Sales,Bachelor,6,Executive,4,54472,1,0,63,1,4
+383,36,Female,Marketing,Bachelor,3,Manager,2,81813,1,1,67,0,3
+384,27,Female,Finance,Bachelor,16,Staff,2,66021,1,0,11,1,4
+385,25,Female,IT,Bachelor,7,Staff,2,84131,3,0,43,1,4
+386,57,Male,Marketing,Master,14,Staff,4,54087,4,1,17,1,2
+387,34,Female,IT,Master,9,Manager,1,42828,3,0,96,1,9
+388,53,Male,Finance,Master,15,Staff,4,91610,4,0,4,1,4
+389,37,Male,Sales,High School,3,Manager,2,31401,2,1,63,1,4
+390,36,Male,HR,PhD,2,Executive,5,115179,5,0,68,1,2
+391,55,Male,Sales,Bachelor,2,Manager,3,45193,4,0,81,1,4
+392,26,Male,Marketing,Bachelor,3,Executive,4,74864,1,0,41,0,3
+393,59,Male,HR,Master,18,Manager,4,50307,3,0,83,1,4
+394,47,Female,Marketing,Bachelor,14,Executive,1,49611,2,0,5,1,2
+395,41,Male,Finance,Bachelor,18,Staff,1,73791,1,1,32,1,2
+396,50,Female,HR,PhD,10,Executive,4,41950,2,0,86,1,1
+397,32,Female,Marketing,Master,2,Staff,2,106240,5,0,70,1,4
+398,53,Male,Finance,PhD,1,Staff,3,107403,3,0,35,1,1
+399,50,Female,Sales,High School,4,Executive,1,32745,3,0,22,1,4
+400,34,Female,Finance,High School,14,Manager,2,85243,5,1,65,1,9
+401,50,Female,IT,High School,1,Manager,5,33866,3,0,84,1,4
+402,58,Female,Finance,Master,14,Intern,1,62245,4,0,22,1,12
+403,31,Male,Finance,Bachelor,16,Manager,2,74724,2,0,11,1,3
+404,28,Female,IT,Master,14,Intern,2,101354,1,0,77,1,9
+405,35,Male,Marketing,Master,3,Manager,3,81374,5,0,3,1,3
+406,53,Female,Marketing,Bachelor,3,Manager,3,60116,4,1,9,1,1
+407,49,Female,Finance,PhD,9,Staff,5,111029,1,0,60,1,4
+408,45,Male,IT,High School,6,Intern,2,50447,1,0,76,1,2
+409,34,Female,IT,PhD,13,Manager,2,60431,5,0,87,1,4
+410,33,Female,Sales,High School,2,Intern,3,47908,4,1,14,1,1
+411,48,Female,Marketing,Master,8,Staff,1,59336,1,0,97,1,4
+412,59,Male,HR,High School,2,Staff,1,70992,1,1,18,1,4
+413,59,Female,Marketing,Master,4,Intern,4,85350,4,1,73,1,3
+414,42,Male,Marketing,PhD,15,Staff,3,99561,3,1,23,1,4
+415,56,Female,Sales,Master,4,Executive,4,81955,1,0,74,1,4
+416,48,Male,HR,PhD,13,Executive,3,91240,2,0,83,1,5
+417,47,Male,Sales,Bachelor,12,Staff,5,50093,4,1,47,1,9
+418,56,Female,HR,Bachelor,13,Executive,2,36155,1,1,69,1,10
+419,36,Female,Finance,Bachelor,14,Manager,5,76607,5,1,47,1,4
+420,37,Male,HR,Master,18,Intern,3,63487,2,0,87,1,4
+421,47,Male,Sales,Bachelor,6,Manager,2,85668,1,0,30,1,4
+422,49,Female,Marketing,High School,11,Intern,1,50963,2,0,25,1,4
+423,59,Male,HR,PhD,2,Staff,1,80124,2,1,28,1,4
+424,54,Female,HR,PhD,19,Manager,4,82870,3,0,98,1,9
+425,41,Female,IT,High School,19,Staff,3,86547,2,0,25,1,6
+426,44,Female,Marketing,Master,5,Staff,3,94110,3,1,74,1,2
+427,49,Female,Finance,Master,19,Intern,1,83554,4,0,78,0,19
+428,46,Male,Sales,PhD,2,Intern,5,50936,3,1,58,1,4
+429,37,Female,Finance,Bachelor,10,Intern,2,34426,5,0,94,1,4
+430,43,Male,Marketing,Master,2,Manager,5,118839,1,0,41,1,4
+431,36,Female,HR,Master,11,Executive,5,57606,4,0,25,0,11
+432,43,Male,HR,High School,18,Intern,1,77832,4,1,78,1,6
+433,36,Female,Marketing,High School,15,Intern,1,58151,5,0,99,1,4
+434,33,Male,HR,Bachelor,9,Manager,1,109303,3,0,48,0,9
+435,31,Male,HR,Master,19,Intern,4,41308,1,1,98,1,9
+436,52,Female,HR,Master,9,Manager,5,92522,3,0,10,0,9
+437,38,Female,Sales,High School,3,Staff,3,75671,2,0,99,1,1
+438,55,Female,Sales,Master,9,Intern,2,32204,3,0,75,1,8
+439,43,Female,IT,PhD,14,Intern,4,117265,4,0,11,1,10
+440,40,Male,Finance,High School,19,Staff,3,61131,1,1,85,1,4
+441,29,Female,Marketing,Bachelor,7,Staff,5,82428,3,0,21,1,4
+442,59,Male,Marketing,High School,16,Staff,1,63870,1,0,86,1,12
+443,36,Male,Marketing,Master,16,Intern,5,79067,1,0,45,1,4
+444,49,Female,IT,Bachelor,1,Executive,2,88585,2,1,7,0,1
+445,45,Male,Sales,High School,4,Executive,4,51607,2,0,81,1,2
+446,47,Male,IT,PhD,4,Executive,4,54968,4,0,64,1,4
+447,40,Male,Marketing,PhD,7,Intern,2,41908,5,0,64,1,6
+448,38,Male,Finance,High School,8,Staff,3,56423,1,0,2,0,8
+449,55,Female,HR,PhD,17,Intern,3,104707,5,0,76,1,4
+450,29,Female,Sales,PhD,5,Staff,4,108257,4,0,42,0,5
+451,59,Female,Sales,PhD,7,Intern,4,91215,1,1,82,1,6
+452,47,Female,IT,Bachelor,4,Intern,1,85835,1,0,54,1,4
+453,53,Male,Sales,PhD,6,Staff,3,79429,5,1,75,1,5
+454,35,Male,Marketing,PhD,7,Executive,2,112152,3,1,16,0,7
+455,42,Female,Marketing,PhD,18,Staff,3,68458,2,0,18,1,18
+456,36,Female,IT,Bachelor,5,Manager,1,76169,3,0,99,1,2
+457,33,Female,Marketing,High School,3,Manager,4,37659,5,0,59,1,2
+458,34,Male,Finance,Master,7,Staff,4,90614,2,1,90,1,7
+459,41,Female,IT,PhD,14,Intern,1,107240,3,0,16,1,2
+460,31,Female,Finance,High School,7,Manager,2,62793,2,0,6,1,1
+461,37,Female,HR,PhD,5,Manager,4,76473,1,0,57,1,4
+462,33,Male,Finance,Bachelor,5,Intern,5,119388,3,1,47,1,1
+463,51,Male,HR,High School,2,Intern,4,118330,2,1,48,1,1
+464,26,Male,HR,Bachelor,6,Executive,5,85751,2,0,42,1,4
+465,29,Male,Finance,PhD,15,Intern,1,108915,2,1,76,1,4
+466,53,Male,IT,PhD,10,Staff,1,84254,3,0,60,1,4
+467,43,Male,Marketing,Bachelor,7,Staff,4,37006,4,0,77,1,4
+468,32,Male,Marketing,Master,5,Executive,3,104218,3,1,4,1,1
+469,25,Male,HR,Bachelor,1,Manager,5,95344,5,0,2,0,1
+470,46,Female,HR,PhD,13,Manager,2,63840,3,0,90,1,2
+471,41,Female,IT,Bachelor,18,Intern,4,62430,2,0,59,1,14
+472,31,Male,Sales,Master,13,Staff,2,53091,1,1,27,1,1
+473,49,Male,Finance,Bachelor,18,Manager,4,62983,3,1,27,1,2
+474,28,Female,HR,Master,5,Executive,3,53989,3,1,79,1,4
+475,30,Male,Marketing,Master,13,Executive,3,105451,2,1,72,1,10
+476,55,Male,IT,Bachelor,4,Staff,3,48990,1,0,7,0,4
+477,43,Male,Finance,Bachelor,17,Executive,3,110360,1,0,63,1,1
+478,51,Female,IT,High School,3,Executive,1,66081,5,0,46,1,1
+479,34,Female,Finance,PhD,17,Staff,1,41033,3,0,63,0,17
+480,50,Female,Finance,Master,11,Intern,5,46241,1,0,12,1,4
+481,43,Female,HR,High School,4,Intern,2,35939,1,1,13,1,4
+482,27,Female,IT,Bachelor,2,Executive,4,77562,4,0,43,1,4
+483,37,Male,IT,PhD,16,Intern,4,65063,4,0,17,1,1
+484,52,Female,Marketing,High School,18,Intern,1,106721,1,0,63,1,4
+485,44,Male,Marketing,Master,8,Executive,4,57045,5,0,81,1,5
+486,52,Male,HR,High School,3,Intern,1,74769,1,1,36,1,4
+487,32,Female,HR,Master,9,Executive,5,77118,2,0,85,0,9
+488,25,Female,Sales,Bachelor,6,Manager,2,114703,3,0,8,1,4
+489,27,Male,Marketing,PhD,10,Staff,5,51625,5,1,69,1,2
+490,37,Male,Finance,PhD,10,Staff,3,57076,2,0,90,1,4
+491,52,Male,IT,PhD,13,Intern,3,94805,5,0,80,1,3
+492,49,Female,HR,Bachelor,17,Intern,3,74605,2,0,36,1,17
+493,57,Female,IT,Master,9,Intern,5,114565,3,0,28,1,9
+494,30,Female,IT,Bachelor,17,Staff,4,118509,3,1,93,0,17
+495,56,Female,Sales,PhD,9,Manager,2,69121,4,1,47,0,9
+496,45,Female,Marketing,Bachelor,9,Manager,3,95101,2,0,76,1,4
+497,40,Male,HR,Bachelor,1,Staff,3,61433,4,1,30,1,1
+498,45,Female,IT,Bachelor,2,Manager,3,73309,2,0,23,1,1
+499,35,Male,HR,Master,16,Staff,2,97468,4,0,16,1,11
+500,59,Male,Finance,High School,1,Manager,3,74254,3,0,14,1,4
