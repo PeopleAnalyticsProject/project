@@ -1,0 +1,52 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# 1. 한글 폰트 설정 (그래프 깨짐 방지)
+plt.rcParams['font.family'] = 'Malgun Gothic'
+plt.rcParams['axes.unicode_minus'] = False
+
+# 파일 경로 설정
+file_path = r'C:\Users\user\Desktop\3_PAproject_3_3_NPS.csv'
+
+try:
+    # 2. 파일 불러오기 (cp949 인코딩)
+    df = pd.read_csv(file_path, encoding='cp949')
+
+    # 3. 데이터 필터링
+    # "사업장가입상태코드"가 1(정상 가입)이고 "사업장업종코드"가 300100인 기업
+    filtered_df = df[(df['사업장가입상태코드'] == 1) & (df['사업장업종코드'] == 300100)].copy()
+
+    # 4. "순유입" 변수 생성 (신규취득자수 - 상실가입자수)
+    filtered_df['순유입'] = filtered_df['신규취득자수'] - filtered_df['상실가입자수']
+
+    # 5. 순유입이 높은 순으로 상위 10개 기업 선정
+    top_10_inflow = filtered_df.sort_values(by='순유입', ascending=False).head(10)
+
+    # 6. 히스토그램(막대 그래프) 시각화
+    plt.figure(figsize=(12, 8))
+    bars = plt.bar(top_10_inflow['사업장명'], top_10_inflow['순유입'], color='teal')
+
+    # 그래프 세부 설정
+    plt.title('업종코드 300100 내 기업별 순유입 상위 10선', fontsize=16, pad=20)
+    plt.xlabel('사업장명', fontsize=12)
+    plt.ylabel('순유입 인원 (명)', fontsize=12)
+    plt.xticks(rotation=45, ha='right')
+    plt.grid(axis='y', linestyle=':', alpha=0.6)
+
+    # 막대 위에 숫자 표시
+    for bar in bars:
+        height = bar.get_height()
+        plt.text(bar.get_x() + bar.get_width()/2., height,
+                 f'{int(height)}명', ha='center', va='bottom', fontsize=10, fontweight='bold')
+
+    plt.tight_layout()
+    plt.show()
+
+    # 텍스트 결과 출력
+    print("=== 업종코드 300100 순유입 상위 10개 기업 ===")
+    print(top_10_inflow[['사업장명', '신규취득자수', '상실가입자수', '순유입']].to_string(index=False))
+
+except FileNotFoundError:
+    print(f"오류: '{file_path}' 경로에서 파일을 찾을 수 없습니다.")
+except Exception as e:
+    print(f"오류 발생: {e}")

@@ -1,0 +1,48 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# 1. 한글 폰트 설정 (그래프 깨짐 방지)
+plt.rcParams['font.family'] = 'Malgun Gothic'
+plt.rcParams['axes.unicode_minus'] = False # 마이너스 기호 깨짐 방지
+
+# 파일 경로 설정
+file_path = r'C:\Users\user\Desktop\3_PAproject_3_3_NPS.csv'
+
+try:
+    # 1. 파일 불러오기 (cp949 인코딩)
+    df = pd.read_csv(file_path, encoding='cp949')
+
+    # 2. "법정동주소광역시도코드"가 11(서울), 41(경기)인 데이터만 필터링
+    target_codes = [11, 41]
+    filtered_df = df[df['법정동주소광역시도코드'].isin(target_codes)].copy()
+
+    # 3. "가입자수"가 많은 순서로 상위 10개 기업 선정
+    top_10_subs = filtered_df.sort_values(by='가입자수', ascending=False).head(10)
+
+    # 4. Bar 그래프 그리기
+    plt.figure(figsize=(12, 8))
+    bars = plt.bar(top_10_subs['사업장명'], top_10_subs['가입자수'], color='skyblue')
+
+    # 그래프 세부 설정
+    plt.title('서울/경기 지역 가입자수 상위 10개 기업', fontsize=16, pad=20)
+    plt.xlabel('사업장명', fontsize=12)
+    plt.ylabel('가입자수 (명)', fontsize=12)
+    plt.xticks(rotation=45, ha='right') # 기업명이 길 경우를 대비해 회전
+
+    # 막대 위에 숫자 표시
+    for bar in bars:
+        height = bar.get_height()
+        plt.text(bar.get_x() + bar.get_width()/2., height + 1000,
+                 f'{int(height):,}', ha='center', va='bottom', fontsize=10)
+
+    plt.tight_layout()
+    plt.show()
+
+    # 표로도 확인하고 싶을 경우 출력
+    print("=== 서울/경기 가입자수 상위 10개 기업 리스트 ===")
+    print(top_10_subs[['사업장명', '가입자수']].to_string(index=False))
+
+except FileNotFoundError:
+    print(f"오류: '{file_path}' 경로에서 파일을 찾을 수 없습니다.")
+except Exception as e:
+    print(f"오류 발생: {e}")

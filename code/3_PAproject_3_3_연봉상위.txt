@@ -1,0 +1,35 @@
+import pandas as pd
+
+# 1. 파일 불러오기 (cp949 인코딩 적용)
+# 사용자의 PC 경로를 raw string(r'')으로 지정하여 역슬래시 오류를 방지합니다.
+file_path = r'C:\Users\user\Desktop\3_PAproject_3_3_NPS.csv'
+
+try:
+    # 데이터 로드
+    df = pd.read_csv(file_path, encoding='cp949')
+
+    # 2. 필터링: "사업장가입상태코드"가 1(정상 가입)이고 "가입자수"가 2000명 이상인 기업
+    # (참고: '1인 기업'은 여기서 상태코드가 1인 기업을 의미하는 것으로 해석했습니다.)
+    filtered_df = df[(df['사업장가입상태코드'] == 1) & (df['가입자수'] >= 2000)].copy()
+
+    # 3. 인당금액 계산 (당월고지금액 / 가입자수)
+    filtered_df['인당금액'] = filtered_df['당월고지금액'] / filtered_df['가입자수']
+
+    # 4. 연봉 계산 (인당금액 / 0.095 * 12)
+    # 6. 연봉을 만원 단위로 표시 (계산 결과에서 10,000으로 나눔)
+    filtered_df['연봉'] = ((filtered_df['인당금액'] / 0.095) * 12) / 10000
+
+    # 5. 연봉이 높은 순서로 상위 10개 기업 선정
+    top_10 = filtered_df.sort_values(by='연봉', ascending=False).head(10)
+
+    # 필요한 컬럼만 선택하여 표 형태의 결과물 생성
+    result_table = top_10[['사업장명', '가입자수', '연봉']]
+
+    # 결과 출력
+    print("=== 연봉 상위 10개 기업 분석 결과 (단위: 만원) ===")
+    print(result_table.to_string(index=False))
+
+except FileNotFoundError:
+    print(f"오류: '{file_path}' 경로에서 파일을 찾을 수 없습니다. 경로가 올바른지 확인해주세요.")
+except Exception as e:
+    print(f"오류 발생: {e}")

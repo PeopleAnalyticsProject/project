@@ -1,0 +1,48 @@
+import os
+import sys
+import requests
+import pandas as pd
+import urllib.parse
+
+# 1. 인증 정보 설정
+client_id = "YOUR_CLIENT_ID"       # 발급받은 Client ID 입력
+client_secret = "YOUR_CLIENT_SECRET" # 발급받은 Client Secret 입력
+
+# 2. 검색 설정
+search_word = "성과급"
+display_count = 30 # 가져올 기사 수
+encode_type = urllib.parse.quote(search_word)
+
+# 3. API 호출 URL 생성
+url = f"https://openapi.naver.com/v1/search/news.json?query={encode_type}&display={display_count}"
+
+headers = {
+    "X-Naver-Client-Id": client_id,
+    "X-Naver-Client-Secret": client_secret
+}
+
+# 4. API 요청 및 데이터 처리
+response = requests.get(url, headers=headers)
+
+if response.status_code == 200:
+    data = response.json()
+    items = data['items']
+    
+    # 데이터 정제 (HTML 태그 제거 등)
+    news_list = []
+    for item in items:
+        news_list.append({
+            '제목': item['title'].replace('<b>', '').replace('</b>', '').replace('&quot;', '"'),
+            '링크': item['link'],
+            '요약': item['description'].replace('<b>', '').replace('</b>', '').replace('&quot;', '"'),
+            '게시일': item['pubDate']
+        })
+    
+    # 5. 엑셀 저장
+    df = pd.DataFrame(news_list)
+    file_name = f"네이버뉴스_검색_{search_word}.xlsx"
+    df.to_excel(file_name, index=False)
+    
+    print(f"성공적으로 '{file_name}' 파일을 생성했습니다.")
+else:
+    print(f"Error Code: {response.status_code}")

@@ -1,0 +1,71 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# 1. 한글 폰트 설정 (윈도우 환경: 맑은 고딕)
+plt.rcParams['font.family'] = 'Malgun Gothic'
+plt.rcParams['axes.unicode_minus'] = False
+
+# 파일 경로 설정
+file_path = r'C:\Users\user\Desktop\3_PAproject_3_3_NPS.csv'
+
+# 비교 대상 기업 리스트 (공백 포함 여부를 고려하여 작성)
+target_companies = [
+    "에스케이하이닉스 주식회사", 
+    "삼성전자(주)", 
+    "한미반도체(주)", 
+    "에스케이실트론주식회사"
+]
+
+try:
+    # 2. 데이터 불러오기 (cp949 인코딩)
+    df = pd.read_csv(file_path, encoding='cp949')
+
+    # 3. 데이터 필터링
+    # "사업장가입상태코드"가 1인 기업들만 추출
+    active_df = df[df['사업장가입상태코드'] == 1].copy()
+
+    # 기업명 앞뒤 공백 제거 후 비교 대상 기업들만 선택
+    active_df['사업장명_clean'] = active_df['사업장명'].str.strip()
+    comparison_df = active_df[active_df['사업장명_clean'].isin(target_companies)].copy()
+
+    # 4. 연봉 계산 (만원 단위)
+    # 인당금액 = 당월고지금액 / 가입자수
+    # 연봉 = (인당금액 / 0.095) * 12
+    comparison_df['인당금액'] = comparison_df['당월고지금액'] / comparison_df['가입자수']
+    comparison_df['연봉'] = ((comparison_df['인당금액'] / 0.095) * 12) / 10000
+
+    # 그래프 출력 시 요청하신 순서대로 나오도록 정렬
+    comparison_df['사업장명_clean'] = pd.Categorical(comparison_df['사업장명_clean'], categories=target_companies, ordered=True)
+    comparison_df = comparison_df.sort_values('사업장명_clean')
+
+    # 5. Bar 그래프 시각화
+    plt.figure(figsize=(12, 7))
+    # 기업별 구분을 위해 다양한 색상 적용
+    colors = ['#ff4d4d', '#4d94ff', '#5c5c5c', '#ffa31a'] 
+    
+    bars = plt.bar(comparison_df['사업장명_clean'], comparison_df['연봉'], color=colors)
+
+    # 그래프 상세 설정
+    plt.title('우리회사 vs 경쟁업체 추정 연봉 비교', fontsize=16, pad=20)
+    plt.ylabel('추정 연봉 (단위: 만원)', fontsize=12)
+    plt.ylim(0, comparison_df['연봉'].max() * 1.2) # 상단 여유 공간 확보
+    plt.grid(axis='y', linestyle='--', alpha=0.4)
+
+    # 6. 막대 위에 연봉 값 표시
+    for bar in bars:
+        height = bar.get_height()
+        plt.text(bar.get_x() + bar.get_width()/2., height + 100,
+                 f'{int(height):,}만원', ha='center', va='bottom', 
+                 fontsize=11, fontweight='bold')
+
+    plt.tight_layout()
+    plt.show()
+
+    # 표로 결과 요약 출력
+    print("=== 분석 대상 기업 연봉 요약 ===")
+    print(comparison_df[['사업장명', '가입자수', '연봉']].to_string(index=False))
+
+except FileNotFoundError:
+    print(f"오류: '{file_path}' 경로에서 파일을 찾을 수 없습니다.")
+except Exception as e:
+    print(f"오류 발생: {e}")

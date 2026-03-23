@@ -1,0 +1,48 @@
+import pandas as pd
+
+# 1. 파일 경로 설정
+file_path = r'C:\Users\user\Desktop\3_PAproject_3_3_NPS.csv'
+output_file = r'C:\Users\user\Desktop\SK_Affiliates_Salary_Analysis.xlsx'
+
+try:
+    # 2. 데이터 불러오기 (cp949 인코딩)
+    df = pd.read_csv(file_path, encoding='cp949')
+
+    # 3. 데이터 필터링
+    # "사업장가입상태코드"가 1인 기업 (정상 가입) 추출
+    active_df = df[df['사업장가입상태코드'] == 1].copy()
+
+    # "사업장명"에 "에스케이"가 포함된 기업들만 필터링
+    sk_group_df = active_df[active_df['사업장명'].str.contains('에스케이', na=False)].copy()
+
+    # 4. 연봉 계산
+    # 가입자수가 0인 경우 발생할 수 있는 오류를 방지하기 위해 가입자수 > 0 조건 추가 가능
+    sk_group_df = sk_group_df[sk_group_df['가입자수'] > 0]
+
+    # 인당금액 = 당월고지금액 / 가입자수
+    sk_group_df['인당금액'] = sk_group_df['당월고지금액'] / sk_group_df['가입자수']
+
+    # 연봉 = (인당금액 / 0.095) * 12
+    # 읽기 편하도록 만원 단위로 환산 (/ 10000)
+    sk_group_df['연봉(만원)'] = ((sk_group_df['인당금액'] / 0.095) * 12) / 10000
+
+    # 5. 결과 정리
+    # 필요한 컬럼만 선택 (사업장명, 가입자수, 연봉 등)
+    result_df = sk_group_df[['사업장명', '가입자수', '당월고지금액', '연봉(만원)']]
+
+    # 연봉이 높은 순서대로 정렬
+    result_df = result_df.sort_values(by='연봉(만원)', ascending=False)
+
+    # 6. 엑셀 파일로 저장
+    result_df.to_excel(output_file, index=False)
+
+    print(f"분석이 완료되었습니다.")
+    print(f"파일 저장 경로: {output_file}")
+    print("-" * 30)
+    print("상위 5개 기업 요약:")
+    print(result_df.head().to_string(index=False))
+
+except FileNotFoundError:
+    print(f"오류: '{file_path}' 경로에서 파일을 찾을 수 없습니다. 경로를 확인해주세요.")
+except Exception as e:
+    print(f"오류 발생: {e}")

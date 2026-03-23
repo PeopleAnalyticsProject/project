@@ -1,0 +1,61 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# 1. 한글 폰트 설정 (윈도우 환경: 맑은 고딕)
+plt.rcParams['font.family'] = 'Malgun Gothic'
+plt.rcParams['axes.unicode_minus'] = False
+
+# 파일 경로
+file_path = r'C:\Users\user\Desktop\3_PAproject_3_3_NPS.csv'
+
+try:
+    # 2. 데이터 불러오기 (cp949 인코딩)
+    df = pd.read_csv(file_path, encoding='cp949')
+
+    # 3. 데이터 필터링
+    # "사업장가입상태코드"가 2(탈퇴/폐업)인 기업 선택
+    closed_df = df[df['사업장가입상태코드'] == 2].copy()
+
+    # "탈퇴일자"를 날짜 형식으로 변환 (에러 데이터는 NaT 처리)
+    closed_df['탈퇴일자'] = pd.to_datetime(closed_df['탈퇴일자'], errors='coerce')
+
+    # 2025년에 탈퇴한 기업만 필터링
+    closed_2025 = closed_df[closed_df['탈퇴일자'].dt.year == 2025].copy()
+
+    # 4. 월별 폐업 수 산출
+    closed_2025['월'] = closed_2025['탈퇴일자'].dt.month
+    monthly_counts = closed_2025['월'].value_counts().sort_index()
+
+    # 5. 히스토그램(월별 분포) 시각화
+    plt.figure(figsize=(10, 6))
+    
+    # 데이터가 존재할 경우 그래프 생성
+    if not monthly_counts.empty:
+        # 월별 데이터를 막대 그래프(히스토그램 형태)로 표시
+        bars = plt.bar(monthly_counts.index.astype(str) + '월', monthly_counts.values, color='salmon')
+        
+        plt.title('2025년 월별 기업 탈퇴(폐업) 현황', fontsize=15, pad=15)
+        plt.xlabel('월', fontsize=12)
+        plt.ylabel('폐업 기업 수', fontsize=12)
+        plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+        # 막대 위에 숫자 표시
+        for bar in bars:
+            height = bar.get_height()
+            plt.text(bar.get_x() + bar.get_width()/2., height,
+                     f'{int(height):,}', ha='center', va='bottom', fontsize=10)
+    else:
+        print("2025년 탈퇴 데이터가 존재하지 않습니다.")
+
+    plt.tight_layout()
+    plt.show()
+
+    # 표 형태 결과 출력
+    if not monthly_counts.empty:
+        print("=== 2025년 월별 탈퇴 기업 수 ===")
+        print(monthly_counts)
+
+except FileNotFoundError:
+    print(f"오류: '{file_path}' 경로에서 파일을 찾을 수 없습니다.")
+except Exception as e:
+    print(f"오류 발생: {e}")
