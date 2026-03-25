@@ -22,7 +22,7 @@ Project#3 AI기반 보상/임금관리 People Analytics프로젝트 (1) EDA
  4. 실무질문 - 동종업계의 현황을 파악하고 싶습니다. 
  5. 실무질문 - 그룹 계열사의 연봉현황을 파악하고 싶습니다.
 
-Project#3 AI기반 보상/임금관리 People Analytics프로젝트 (2) 검증
+Project#4 AI기반 보상/임금관리 People Analytics프로젝트 (2) 검증
  1. 실무질문 – 산업간 임금차이가 있을까요?
   ANOVA – 지역별 임금차이가 있을까요?
  2. 실무질문 – 업력은 연봉에 영향을 주나요?
