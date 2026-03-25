@@ -1,0 +1,76 @@
+import pandas as pd
+import numpy as np
+from scipy import stats
+from statsmodels.stats.multicomp import pairwise_tukeyhsd
+
+# 1. 데이터 로드
+# 인코딩은 요청하신대로 cp949, 대용량 데이터 경고 방지를 위해 low_memory=False 설정
+file_path = r'C:\Users\user\Desktop\3_PAproject_3_3_NPS.csv'
+
+try:
+    df = pd.read_csv(file_path, encoding='cp949', low_memory=False)
+except FileNotFoundError:
+    print("파일을 찾을 수 없습니다. 경로를 확인해주세요.")
+    exit()
+
+# 2. 데이터 전처리 (숫자형 변환 및 결측치 제거)
+# 계산에 필요한 컬럼들이 문자열로 인식될 경우를 대비해 숫자형으로 강제 변환
+cols = ['당월고지금액', '가입자수', '사업장업종코드', '사업장가입상태코드']
+for col in cols:
+    df[col] = pd.to_numeric(df[col], errors='coerce')
+
+# 3. 필터링 조건 적용
+# 조건 1: 사업장가입상태코드 == 1 (정상 가입)
+# 조건 2: 가입자수 >= 200명
+mask = (df['사업장가입상태코드'] == 1) & (df['가입자수'] >= 200)
+filtered_df = df[mask].copy()
+
+# 4. 변수 계산 (요청하신 산식 적용)
+# 인당금액 = 당월고지금액 / 가입자수
+filtered_df['인당금액'] = filtered_df['당월고지금액'] / filtered_df['가입자수']
+
+# 연봉 = (인당금액 / 0.095) * 12
+filtered_df['연봉'] = (filtered_df['인당금액'] / 0.095) * 12
+
+# 5. 분석 대상 업종 필터링
+target_codes = [722000, 551001, 671202, 724000]
+final_df = filtered_df[filtered_df['사업장업종코드'].isin(target_codes)].dropna(subset=['연봉'])
+
+# 6. 업종별 기초 통계 표시 (기업 수 및 평균 연봉)
+print("-" * 60)
+print("### [업종별 분석 대상 기초 통계] ###")
+summary = final_df.groupby('사업장업종코드')['연봉'].agg(['count', 'mean']).rename(
+    columns={'count': '기업수(개)', 'mean': '평균연봉(원)'}
+)
+# 보기 편하게 천단위 콤마 추가하여 출력
+pd.options.display.float_format = '{:,.0f}'.format
+print(summary)
+print("-" * 60)
+
+# 7. ANOVA 및 사후검증 수행
+# 분석에 필요한 그룹 데이터 생성 (데이터가 존재하는 코드만 추출)
+groups = [final_df[final_df['사업장업종코드'] == code]['연봉'] for code in target_codes if
+          not final_df[final_df['사업장업종코드'] == code].empty]
+active_codes = [code for code in target_codes if not final_df[final_df['사업장업종코드'] == code].empty]
+
+if len(groups) >= 2:
+    # ANOVA 검정
+    f_val, p_val = stats.f_oneway(*groups)
+
+    print("### [1. ANOVA 분석 결과] ###")
+    print(f"F-통계량: {f_val:.44f}")
+    print(f"p-value: {p_val:.4f}")
+
+    if p_val < 0.05:
+        print("결과: 업종별 연봉 차이가 통계적으로 유의미합니다. (p < 0.05)")
+    else:
+        print("결과: 업종별 연봉 차이가 통계적으로 유의미하지 않습니다. (p >= 0.05)")
+
+    print("\n### [2. 사후검증(Tukey HSD) 결과] ###")
+    # 사후검증 수행
+    posthoc = pairwise_tukeyhsd(endog=final_df['연봉'], groups=final_df['사업장업종코드'], alpha=0.05)
+    print(posthoc)
+
+    print("\n* 참고: 'reject'가 True인 항목이 통계적으로 유의미한 차이가 있는 그룹 쌍입니다.")
+else:
+    print("분석 실패: 비교 가능한 그룹(데이터가 있는 업종)이 2개 미만입니다.")

@@ -1,0 +1,63 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import statsmodels.api as sm
+from datetime import datetime
+
+# 1. 데이터 로드 (cp949 인코딩)
+file_path = r'C:\Users\user\Desktop\3_PAproject_3_3_NPS.csv'
+df = pd.read_csv(file_path, encoding='cp949', low_memory=False)
+
+# 2. 데이터 전처리 (숫자형 변환)
+cols = ['당월고지금액', '가입자수', '사업장가입상태코드']
+for col in cols:
+    df[col] = pd.to_numeric(df[col], errors='coerce')
+
+# 3. 필터링 (가입상태 1 & 200명 이상)
+filtered_df = df[(df['사업장가입상태코드'] == 1) & (df['가입자수'] >= 200)].copy()
+
+# 4. 연도 추출 (적용일자 변환)
+# format='%Y-%m-%d' 형식을 사용하여 날짜 객체로 변환 후 연도(year)만 추출
+filtered_df['적용일자'] = pd.to_datetime(filtered_df['적용일자'], format='%Y-%m-%d', errors='coerce')
+filtered_df['연도'] = filtered_df['적용일자'].dt.year
+
+# 5. 연봉 계산
+filtered_df['인당금액'] = filtered_df['당월고지금액'] / filtered_df['가입자수']
+filtered_df['연봉'] = (filtered_df['인당금액'] / 0.095) * 12
+
+# 결측치 제거 (연도나 연봉이 없는 데이터 제외)
+final_df = filtered_df.dropna(subset=['연도', '연봉'])
+
+# 6. 회귀 분석 수행 (Statsmodels 사용)
+# 독립변수(X): 연도, 종속변수(y): 연봉
+X = final_df['연도']
+y = final_df['연봉']
+X_with_constant = sm.add_constant(X)  # 절편(Intercept) 추가
+
+model = sm.OLS(y, X_with_constant).fit()
+
+print("-" * 60)
+print("### [회귀 분석 결과 보고서] ###")
+print(model.summary())
+print("-" * 60)
+
+# 7. 시각화 (회귀선 포함 그래프)
+plt.rc('font', family='Malgun Gothic') # 한글 폰트 설정
+plt.figure(figsize=(12, 7))
+
+# 산점도와 회귀선 그리기
+sns.regplot(x='연도', y='연봉', data=final_df, 
+            scatter_kws={'alpha':0.3, 'color':'gray'}, 
+            line_kws={'color':'red', 'lw':2})
+
+plt.title('기업 적용연도에 따른 추정 연봉 변화 (회귀 분석)', fontsize=15)
+plt.xlabel('적용 연도', fontsize=12)
+plt.ylabel('추정 연봉 (원)', fontsize=12)
+plt.grid(True, linestyle='--', alpha=0.6)
+
+# y축 단위 보기 편하게 조정 (억 단위 등)
+current_values = plt.gca().get_yticks()
+plt.gca().set_yticklabels(['{:,.0f}'.format(x) for x in current_values])
+
+plt.show()

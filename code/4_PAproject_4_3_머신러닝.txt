@@ -1,0 +1,93 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+from xgboost import XGBRegressor
+from lightgbm import LGBMRegressor
+import matplotlib.pyplot as plt
+
+# 1. 데이터 불러오기 (low_memory=False 추가하여 경고 해결)
+file_path = r'C:\Users\user\Desktop\3_PAproject_3_3_NPS.csv'
+df = pd.read_csv(file_path, encoding='cp949', low_memory=False)
+
+# 2. 데이터 필터링 및 전처리
+df = df[(df['사업장가입상태코드'] == 1) & (df['가입자수'] >= 200)].copy()
+
+# 3. 변수 생성 및 무한대/결측치 처리
+df['인당금액'] = df['당월고지금액'] / df['가입자수']
+df['연봉'] = (df['인당금액'] / 0.095) * 12
+
+# 계산 중 발생할 수 있는 결측치나 무한대 제거
+df = df.replace([np.inf, -np.inf], np.nan).dropna(subset=['연봉'])
+
+# 4. 날짜 처리
+df['적용일자'] = pd.to_datetime(df['적용일자'], format='%Y-%m-%d', errors='coerce')
+df = df.dropna(subset=['적용일자'])  # 날짜 변환 실패 데이터 제거
+df['연도'] = df['적용일자'].dt.year
+
+# 5. 분석 대상 필터링
+target_industries = [722000, 551001, 671202, 724000]
+target_regions = [41, 11, 28, 52]
+
+# 필터링 시 데이터 타입 일치 (int로 통일 후 비교)
+df['사업장업종코드'] = pd.to_numeric(df['사업장업종코드'], errors='coerce')
+df['법정동주소광역시도코드'] = pd.to_numeric(df['법정동주소광역시도코드'], errors='coerce')
+
+df_ml = df[df['사업장업종코드'].isin(target_industries) &
+           df['법정동주소광역시도코드'].isin(target_regions)].copy()
+
+# 6. 머신러닝 준비
+features = ['사업장업종코드', '법정동주소광역시도코드', '가입자수', '연도']
+target = '연봉'
+
+X = df_ml[features]
+y = df_ml[target]
+
+# 범주형 변수를 문자열로 변환 (OneHotEncoding용)
+cat_features = ['사업장업종코드', '법정동주소광역시도코드']
+num_features = ['가입자수', '연도']
+
+for col in cat_features:
+    X.loc[:, col] = X[col].astype(str)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# 전처리 파이프라인
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('cat', OneHotEncoder(handle_unknown='ignore', sparse_output=False), cat_features),
+        ('num', 'passthrough', num_features)
+    ])
+
+# 7. 모델 비교 실행
+models = {
+    "Random Forest": RandomForestRegressor(n_estimators=100, random_state=42),
+    "XGBoost": XGBRegressor(n_estimators=100, learning_rate=0.1, random_state=42),
+    "LightGBM": LGBMRegressor(n_estimators=100, learning_rate=0.1, random_state=42, verbose=-1)
+}
+
+results = []
+
+for name, model in models.items():
+    try:
+        pipeline = Pipeline(steps=[('preprocessor', preprocessor),
+                                   ('regressor', model)])
+
+        pipeline.fit(X_train, y_train)
+        y_pred = pipeline.predict(X_test)
+
+        rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+        r2 = r2_score(y_test, y_pred)
+        results.append({"Model": name, "RMSE": rmse, "R2": r2})
+        print(f"{name} 학습 완료")
+
+    except Exception as e:
+        print(f"{name} 학습 중 오류 발생: {e}")
+
+# 결과 출력
+print("\n### 최종 모델 성능 비교 ###")
+print(pd.DataFrame(results))

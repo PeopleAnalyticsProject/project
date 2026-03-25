@@ -1,0 +1,103 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+import shap
+import warnings
+
+# 1. 환경 설정 및 한글 폰트
+warnings.filterwarnings("ignore")
+plt.rcParams['font.family'] = 'Malgun Gothic'
+plt.rcParams['axes.unicode_minus'] = False
+
+# 2. 데이터 로드 및 필터링
+file_path = r'C:\Users\user\Desktop\3_PAproject_3_3_NPS.csv'
+df = pd.read_csv(file_path, encoding='cp949', low_memory=False)
+
+# 조건: 사업장가입상태코드 1 & 가입자수 200명 이상
+df = df[(df['사업장가입상태코드'] == 1) & (df['가입자수'] >= 200)].copy()
+
+# 3. 타겟 변수(연봉) 및 연도 추출
+df['인당금액'] = df['당월고지금액'] / df['가입자수']
+df['연봉'] = (df['인당금액'] / 0.095) * 12
+df = df.replace([np.inf, -np.inf], np.nan).dropna(subset=['연봉'])
+
+df['적용일자'] = pd.to_datetime(df['적용일자'], format='%Y-%m-%d', errors='coerce')
+df = df.dropna(subset=['적용일자'])
+df['연도'] = df['적용일자'].dt.year
+
+# 4. 분석 대상 산업(722000, 551001, 671202, 724000) 및 지역(41, 11, 28, 52) 필터링
+target_industries = [722000, 551001, 671202, 724000]
+target_regions = [41, 11, 28, 52]
+
+df['사업장업종코드'] = pd.to_numeric(df['사업장업종코드'], errors='coerce')
+df['법정동주소광역시도코드'] = pd.to_numeric(df['법정동주소광역시도코드'], errors='coerce')
+
+df_ml = df[df['사업장업종코드'].isin(target_industries) &
+           df['법정동주소광역시도코드'].isin(target_regions)].copy()
+
+# 5. 데이터 분할
+features = ['사업장업종코드', '법정동주소광역시도코드', '가입자수', '연도']
+cat_features = ['사업장업종코드', '법정동주소광역시도코드']
+num_features = ['가입자수', '연도']
+
+X = df_ml[features]
+y = df_ml['연봉']
+
+for col in cat_features:
+    X[col] = X[col].astype(str)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# 6. 전처리 및 Random Forest 모델 파이프라인
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('cat', OneHotEncoder(handle_unknown='ignore', sparse_output=False), cat_features),
+        ('num', StandardScaler(), num_features)
+    ])
+
+rf_model = RandomForestRegressor(n_estimators=100, max_depth=10, random_state=42)
+
+pipeline = Pipeline(steps=[('preprocessor', preprocessor),
+                           ('regressor', rf_model)])
+
+# 모델 학습
+pipeline.fit(X_train, y_train)
+
+# 7. 성능 평가
+y_pred = pipeline.predict(X_test)
+print(f"모델 R2 Score: {r2_score(y_test, y_pred):.4f}")
+
+# 8. SHAP Value 분석 및 시각화
+print("\nSHAP 분석을 시작합니다 (데이터 크기에 따라 시간이 소요될 수 있습니다)...")
+
+# 테스트 데이터를 전처리기로 변환 (SHAP은 변환된 수치 데이터를 입력으로 받음)
+X_test_transformed = pipeline.named_steps['preprocessor'].transform(X_test)
+
+# 변수 이름 복원
+ohe_names = pipeline.named_steps['preprocessor'].transformers_[0][1].get_feature_names_out(cat_features)
+all_feature_names = list(ohe_names) + num_features
+
+# SHAP Explainer 실행
+explainer = shap.TreeExplainer(pipeline.named_steps['regressor'])
+shap_values = explainer.shap_values(X_test_transformed)
+
+# 시각화 1: Summary Bar Plot (전체 중요도 합계)
+plt.figure(figsize=(10, 6))
+shap.summary_plot(shap_values, X_test_transformed, feature_names=all_feature_names, plot_type="bar", show=False)
+plt.title("SHAP Feature Importance (Global)")
+plt.show()
+
+# 시각화 2: Beeswarm Plot (개별 데이터 기여 방향성)
+plt.figure(figsize=(10, 6))
+# 데이터 프레임 형태로 변환하여 시각화 가독성 높임
+X_test_df = pd.DataFrame(X_test_transformed, columns=all_feature_names)
+shap.summary_plot(shap_values, X_test_df, show=False)
+plt.title("SHAP Beeswarm Plot (Impact on Salary)")
+plt.show()

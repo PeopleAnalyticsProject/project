@@ -1,0 +1,59 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import statsmodels.api as sm
+
+# 1. 데이터 로드 (cp949 인코딩)
+file_path = r'C:\Users\user\Desktop\3_PAproject_3_3_NPS.csv'
+df = pd.read_csv(file_path, encoding='cp949', low_memory=False)
+
+# 2. 데이터 전처리 (숫자형 변환)
+cols = ['당월고지금액', '가입자수', '사업장가입상태코드']
+for col in cols:
+    df[col] = pd.to_numeric(df[col], errors='coerce')
+
+# 3. 필터링 (가입상태 1 & 가입자수 200명 이상)
+filtered_df = df[(df['사업장가입상태코드'] == 1) & (df['가입자수'] >= 200)].copy()
+
+# 4. 변수 계산
+# 인당금액 = 당월고지금액 / 가입자수
+filtered_df['인당금액'] = filtered_df['당월고지금액'] / filtered_df['가입자수']
+# 연봉 = (인당금액 / 0.095) * 12
+filtered_df['연봉'] = (filtered_df['인당금액'] / 0.095) * 12
+
+# 결측치 제거
+final_df = filtered_df.dropna(subset=['가입자수', '연봉'])
+
+# 5. 회귀 분석 수행 (Statsmodels)
+# 독립변수(X): 가입자수, 종속변수(y): 연봉
+X = final_df['가입자수']
+y = final_df['연봉']
+X_with_constant = sm.add_constant(X)  # 절편(Intercept) 추가
+
+model = sm.OLS(y, X_with_constant).fit()
+
+print("-" * 60)
+print("### [가입자수 -> 연봉 회귀 분석 결과] ###")
+print(model.summary())
+print("-" * 60)
+
+# 6. 시각화 (산점도 및 회귀선)
+plt.rc('font', family='Malgun Gothic') # 한글 폰트 설정
+plt.figure(figsize=(12, 8))
+
+# sns.regplot을 사용하여 산점도와 회귀직선 시각화
+sns.regplot(x='가입자수', y='연봉', data=final_df, 
+            scatter_kws={'alpha':0.3, 'color':'skyblue'}, 
+            line_kws={'color':'red', 'lw':2})
+
+plt.title('기업 규모(가입자수)가 추정 연봉에 미치는 영향', fontsize=15)
+plt.xlabel('가입자수 (명)', fontsize=12)
+plt.ylabel('추정 연봉 (원)', fontsize=12)
+
+# y축 단위를 천단위 콤마 형식으로 변경
+current_values = plt.gca().get_yticks()
+plt.gca().set_yticklabels(['{:,.0f}'.format(x) for x in current_values])
+
+plt.grid(True, linestyle='--', alpha=0.5)
+plt.show()

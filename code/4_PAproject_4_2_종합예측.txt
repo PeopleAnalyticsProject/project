@@ -1,0 +1,64 @@
+import pandas as pd
+import statsmodels.api as sm
+import numpy as np
+
+# 1. 데이터 로드 (DtypeWarning 방지를 위해 low_memory=False 설정)
+file_path = r'C:\Users\user\Desktop\3_PAproject_3_3_NPS.csv'
+df = pd.read_csv(file_path, encoding='cp949', low_memory=False)
+
+# 2. 수치형 변수 강제 변환 (문자열 등이 섞여 있을 경우 대비)
+# '당월고지금액'과 '가입자수'에서 숫자가 아닌 것들을 제거하고 float로 변환
+for col in ['당월고지금액', '가입자수']:
+    df[col] = pd.to_numeric(df[col].astype(str).str.replace(',', ''), errors='coerce')
+
+# 결측치 제거 (변환 중 발생한 NaN 포함)
+df = df.dropna(subset=['당월고지금액', '가입자수', '사업장가입상태코드', '적용일자'])
+
+# 3. 필터링 (1인 기업 & 가입자수 200명 이상)
+df_filtered = df[(df['사업장가입상태코드'] == 1) & (df['가입자수'] >= 200)].copy()
+
+# 4. 연봉 변수 생성 및 적용일자 처리
+df_filtered['인당금액'] = df_filtered['당월고지금액'] / df_filtered['가입자수']
+df_filtered['연봉'] = (df_filtered['인당금액'] / 0.095) * 12
+
+df_filtered['적용일자'] = pd.to_datetime(df_filtered['적용일자'], format='%Y-%m-%d', errors='coerce')
+df_filtered = df_filtered.dropna(subset=['적용일자']) # 날짜 변환 실패 행 제거
+df_filtered['연도'] = df_filtered['적용일자'].dt.year
+
+# 5. 회귀분석을 위한 데이터 준비
+selected_industry = [722000, 551001, 671202, 724000]
+selected_region = [41, 11, 28, 52]
+
+# 분석 대상 데이터 필터링
+df_analysis = df_filtered[
+    df_filtered['사업장업종코드'].isin(selected_industry) & 
+    df_filtered['법정동주소광역시도코드'].isin(selected_region)
+].copy()
+
+# 범주형 변수 처리 (확실하게 문자열로 변환 후 더미 생성)
+df_analysis['사업장업종코드'] = df_analysis['사업장업종코드'].astype(int).astype(str)
+df_analysis['법정동주소광역시도코드'] = df_analysis['법정동주소광역시도코드'].astype(int).astype(str)
+
+# 독립변수와 종속변수 분리
+target = '연봉'
+features = ['가입자수', '연도'] # 연속형 변수
+
+# 더미 변수 생성
+X_dummies = pd.get_dummies(df_analysis[['사업장업종코드', '법정동주소광역시도코드']], drop_first=True)
+
+# 최종 분석 데이터셋 결합 (모든 데이터를 float 타입으로 강제 전환)
+X = pd.concat([df_analysis[features], X_dummies], axis=1).astype(float)
+y = df_analysis[target].astype(float)
+
+# 6. 회귀분석 수행
+X = sm.add_constant(X) # 상수항 추가
+
+# 무한대(inf)나 결측치 최종 체크
+mask = ~np.isnan(y) & ~np.isinf(y) & ~np.isnan(X).any(axis=1) & ~np.isinf(X).any(axis=1)
+X = X[mask]
+y = y[mask]
+
+model = sm.OLS(y, X).fit()
+
+# 결과 출력
+print(model.summary())

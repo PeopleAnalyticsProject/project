@@ -1,0 +1,102 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+import warnings
+
+# 1. 환경 설정
+warnings.filterwarnings("ignore")
+plt.rcParams['font.family'] = 'Malgun Gothic' # 한글 깨짐 방지
+plt.rcParams['axes.unicode_minus'] = False
+
+# 2. 데이터 로드 및 필터링
+file_path = r'C:\Users\user\Desktop\3_PAproject_3_3_NPS.csv'
+df = pd.read_csv(file_path, encoding='cp949', low_memory=False)
+
+# 조건 필터링: 사업장가입상태코드 1 & 가입자수 200명 이상
+df = df[(df['사업장가입상태코드'] == 1) & (df['가입자수'] >= 200)].copy()
+
+# 3. 타겟 변수(연봉) 생성 및 데이터 정제
+df['인당금액'] = df['당월고지금액'] / df['가입자수']
+df['연봉'] = (df['인당금액'] / 0.095) * 12
+
+# 무한대/결측치 제거
+df = df.replace([np.inf, -np.inf], np.nan).dropna(subset=['연봉'])
+
+# 날짜에서 연도 추출
+df['적용일자'] = pd.to_datetime(df['적용일자'], format='%Y-%m-%d', errors='coerce')
+df = df.dropna(subset=['적용일자'])
+df['연도'] = df['적용일자'].dt.year
+
+# 4. 분석 대상 산업 및 지역 필터링 (유목 변수 처리)
+target_industries = [722000, 551001, 671202, 724000]
+target_regions = [41, 11, 28, 52]
+
+df['사업장업종코드'] = pd.to_numeric(df['사업장업종코드'], errors='coerce')
+df['법정동주소광역시도코드'] = pd.to_numeric(df['법정동주소광역시도코드'], errors='coerce')
+
+df_ml = df[df['사업장업종코드'].isin(target_industries) &
+           df['법정동주소광역시도코드'].isin(target_regions)].copy()
+
+# 5. 머신러닝 데이터 분할
+features = ['사업장업종코드', '법정동주소광역시도코드', '가입자수', '연도']
+X = df_ml[features]
+y = df_ml['연봉']
+
+# 범주형 변수 타입 변환
+cat_features = ['사업장업종코드', '법정동주소광역시도코드']
+num_features = ['가입자수', '연도']
+for col in cat_features:
+    X[col] = X[col].astype(str)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# 6. 전처리 및 Random Forest 파이프라인 구축
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('cat', OneHotEncoder(handle_unknown='ignore', sparse_output=False), cat_features),
+        ('num', StandardScaler(), num_features)
+    ])
+
+# Random Forest 단일 모델 설정
+rf_model = RandomForestRegressor(n_estimators=100, max_depth=10, random_state=42)
+
+pipeline = Pipeline(steps=[('preprocessor', preprocessor),
+                           ('regressor', rf_model)])
+
+# 7. 모델 학습 및 평가
+pipeline.fit(X_train, y_train)
+y_pred = pipeline.predict(X_test)
+
+r2 = r2_score(y_test, y_pred)
+rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+
+print(f"--- Random Forest 분석 결과 ---")
+print(f"R2 (결정계수): {r2:.4f}")
+print(f"RMSE (평균 제곱근 오차): {rmse:,.0f}원")
+
+# 8. 특성 중요도(Feature Importance) 추출
+ohe_names = pipeline.named_steps['preprocessor'].transformers_[0][1].get_feature_names_out(cat_features)
+all_feature_names = list(ohe_names) + num_features
+importances = pipeline.named_steps['regressor'].feature_importances_
+
+fi_df = pd.DataFrame({'Feature': all_feature_names, 'Importance': importances})
+fi_df = fi_df.sort_values(by='Importance', ascending=False).reset_index(drop=True)
+
+print("\n--- 특성 중요도 수치 (Top 10) ---")
+print(fi_df.head(10))
+
+# 9. 시각화
+plt.figure(figsize=(12, 7))
+sns.barplot(x='Importance', y='Feature', data=fi_df, palette='viridis')
+plt.title('연봉 결정 요인 분석 (Random Forest Feature Importance)')
+plt.xlabel('Importance (기여도)')
+plt.ylabel('변수 명')
+plt.tight_layout()
+plt.show()
