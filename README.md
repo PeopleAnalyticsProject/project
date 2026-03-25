@@ -26,7 +26,7 @@ Project#3 AI기반 보상/임금관리 People Analytics프로젝트 (2) 검증
  1. 실무질문 – 산업간 임금차이가 있을까요?
   ANOVA – 지역별 임금차이가 있을까요?
  2. 실무질문 – 업력은 연봉에 영향을 주나요?
-  Regression – 기업규모는 연봉에 영향을 주나요?
+    <br>Regression – 기업규모는 연봉에 영향을 주나요?
   Simulation – 산업/지역/업력/기업규모별로 볼 때 어떤 기업에 가야 돈을 제일 많이 받나요? 
  3. 실무질문 – 산업/지역/업력/기업규모별로 볼 때 어떤 기업에 가야 돈을 제일 많이 받나요?
   Machine Learning - Random Forest /  XGBoost /  LightGBM 모델비교
