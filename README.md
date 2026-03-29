@@ -31,4 +31,4 @@ Project#4 AI기반 보상/임금관리 People Analytics프로젝트 (2) 검증
  3. 실무질문 – 산업/지역/업력/기업규모별로 볼 때 어떤 기업에 가야 돈을 제일 많이 받나요?
   <br>Machine Learning - Random Forest /  XGBoost /  LightGBM 모델비교
   <br>Machine Learning - Feature Importance, SHAP 
- 4. 실무질문 - 현재노동시장을실시간데이터를받아와서분석하고싶습니다 - API
+ 4. 실무질문 - 현재 노동시장의 실시간 데이터를 받아와서 분석하고 싶습니다 - API
