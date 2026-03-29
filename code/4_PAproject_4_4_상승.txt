@@ -1,0 +1,55 @@
+import requests
+import pandas as pd
+import xml.etree.ElementTree as ET
+
+def get_salary_data(service_key, year):
+    """특정 연도의 데이터를 가져와 데이터프레임으로 반환하는 함수"""
+    url = 'http://apis.data.go.kr/B551982/openApiNewAverPay/openXmlNewAverPay'
+    params = {
+        'serviceKey': service_key,
+        'pageNo': '1',
+        'numOfRows': '500', 
+        'ac_year': str(year),
+        'type': 'xml'
+    }
+    
+    try:
+        response = requests.get(url, params=params)
+        root = ET.fromstring(response.content)
+        
+        data = []
+        for item in root.findall('.//item'):
+            name = item.findtext('ENT_NAME')
+            salary = item.findtext('N_SUM')
+            if name and salary:
+                data.append({'기관명': name, f'연봉_{year}': int(float(salary))})
+        return pd.DataFrame(data)
+    except Exception as e:
+        print(f"{year}년 데이터 로드 중 오류: {e}")
+        return pd.DataFrame()
+
+# --- 실행 부분 ---
+# 본인의 서비스키를 입력하세요
+MY_KEY = '본인의_서비스키'
+
+# 1. 2023년 및 2024년 데이터 가져오기
+df_2023 = get_salary_data(MY_KEY, 2023)
+df_2024 = get_salary_data(MY_KEY, 2024)
+
+if not df_2023.empty and not df_2024.empty:
+    # 2. '기관명'을 기준으로 두 데이터 병합 (Inner Join)
+    # 양쪽 연도 모두 데이터가 존재하는 기업만 분석 대상이 됩니다.
+    df_merged = pd.merge(df_2023, df_2024, on='기관명')
+
+    # 3. 상승액 계산 및 정렬
+    df_merged['상승액'] = df_merged['연봉_2024'] - df_merged['연봉_2023']
+    
+    # 상승액이 높은 순으로 정렬 후 상위 20개 추출
+    top_20_increase = df_merged.sort_values(by='상승액', ascending=False).head(20)
+
+    # 4. 결과 출력
+    print("### 2023년 대비 2024년 신입사원 연봉 상승 상위 20개 기업 ###")
+    # 가독성을 위해 출력 컬럼 조정
+    print(top_20_increase[['기관명', '연봉_2023', '연봉_2024', '상승액']].reset_index(drop=True))
+else:
+    print("데이터를 불러오지 못했습니다. 서비스키나 API 상태를 확인해주세요.")

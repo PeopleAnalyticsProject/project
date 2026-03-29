@@ -1,0 +1,68 @@
+import requests
+import pandas as pd
+import xml.etree.ElementTree as ET
+
+def get_salary_data(service_key, year):
+    """특정 연도의 데이터를 가져와 데이터프레임으로 반환하는 함수"""
+    url = 'http://apis.data.go.kr/B551982/openApiNewAverPay/openXmlNewAverPay'
+    params = {
+        'serviceKey': service_key,
+        'pageNo': '1',
+        'numOfRows': '1000', # 모든 데이터를 가져오기 위해 충분히 크게 설정
+        'ac_year': str(year),
+        'type': 'xml'
+    }
+    
+    try:
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        root = ET.fromstring(response.content)
+        
+        items = []
+        for item in root.findall('.//item'):
+            name = item.findtext('ENT_NAME')
+            salary = item.findtext('N_SUM')
+            if name and salary:
+                # 소수점이 포함된 문자열('26859.0') 처리를 위해 float로 먼저 변환 후 int로 변경
+                items.append({'기관명': name, f'연봉_{year}': int(float(salary))})
+        return pd.DataFrame(items)
+    except Exception as e:
+        print(f"{year}년 데이터 로드 중 오류 발생: {e}")
+        return pd.DataFrame()
+
+# ---------------------------------------------------------
+# 실행 부분
+# ---------------------------------------------------------
+# 공공데이터포털에서 발급받은 본인의 서비스키를 입력하세요
+SERVICE_KEY = '본인의_서비스키_입력' 
+
+# 1. 2023년과 2024년 데이터 각각 호출
+df_2023 = get_salary_data(SERVICE_KEY, 2023)
+df_2024 = get_salary_data(SERVICE_KEY, 2024)
+
+if not df_2023.empty and not df_2024.empty:
+    # 2. '기관명'을 기준으로 두 연도 데이터 병합 (Inner Join)
+    # 양쪽 연도 모두 데이터가 있는 기업만 분석 대상이 됩니다.
+    df_merged = pd.merge(df_2023, df_2024, on='기관명')
+
+    # 3. 변동액 계산 (2024년 연봉 - 2023년 연봉)
+    df_merged['변동액'] = df_merged['연봉_2024'] - df_merged['연봉_2023']
+    
+    # 4. 하락한 기업만 필터링 (변동액이 0보다 작은 경우)
+    df_decreased = df_merged[df_merged['변동액'] < 0].copy()
+    
+    # 5. 하락폭이 큰 순서대로(변동액이 가장 작은 순서대로) 20개 추출
+    # 예: -5000원이 -1000원보다 더 큰 하락이므로 오름차순 정렬
+    top_20_decrease = df_decreased.sort_values(by='변동액', ascending=True).head(20)
+
+    # 6. 결과 출력
+    print(f"\n[2023년 대비 2024년 신입사원 평균연봉 하락 상위 20개 기업]")
+    print("-" * 70)
+    # 보기 좋게 컬럼 정리 및 인덱스 재설정
+    result = top_20_decrease[['기관명', '연봉_2023', '연봉_2024', '변동액']].reset_index(drop=True)
+    print(result)
+    
+    # (선택사항) 엑셀 파일로 저장하고 싶다면 아래 주석을 해제하세요.
+    # result.to_excel("연봉_하락_기업_TOP20.xlsx", index=False)
+else:
+    print("데이터를 불러오지 못했습니다. 서비스키 또는 연도 설정을 확인해 주세요.")

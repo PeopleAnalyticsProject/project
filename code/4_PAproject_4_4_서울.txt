@@ -1,0 +1,127 @@
+import requests
+import pandas as pd
+import xml.etree.ElementTree as ET
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+import os
+
+# ==========================================
+# 1. 설정 및 필수 입력 정보
+# ==========================================
+# 공공데이터포털에서 발급받은 본인의 인코딩/디코딩 서비스키를 입력하세요.
+# (대괄호 []를 지우고 따옴표 안에 키만 넣으세요)
+service_key = '여기에_본인의_서비스키를_입력하세요'
+
+target_ent_name = "서울교통공사"
+start_year = 2017
+end_year = 2024
+
+# 데이터를 담을 리스트
+salary_data = []
+
+# ==========================================
+# 2. API 호출 및 데이터 수집 (반복문)
+# ==========================================
+url = 'http://apis.data.go.kr/B551982/openApiNewAverPay/openXmlNewAverPay'
+
+print(f"--- {target_ent_name} 데이터 수집 시작 ({start_year}~{end_year}) ---")
+
+for year in range(start_year, end_year + 1):
+    params = {
+        'serviceKey': service_key,
+        'pageNo': '1',
+        'numOfRows': '1000',  # 전체 기관을 다 가져오기 위해 넉넉하게 설정
+        'ac_year': str(year),
+        'type': 'xml'
+    }
+
+    try:
+        response = requests.get(url, params=params)
+        response.raise_for_status()  # 200 OK가 아니면 에러 발생
+
+        # XML 파싱
+        root = ET.fromstring(response.content)
+
+        found = False
+        # item 태그를 돌며 기관명 확인
+        for item in root.findall('.//item'):
+            ent_name = item.findtext('ENT_NAME')
+
+            # 우리가 찾는 기관명과 일치하는 경우
+            if ent_name and ent_name.strip() == target_ent_name:
+                n_sum = item.findtext('N_SUM')  # 합계(천원)
+
+                if n_sum:
+                    try:
+                        # 소수점 포함 문자열 처리 ('26859.0' -> 26859)
+                        salary_value = int(float(n_sum))
+                        salary_data.append({'연도': year, '연봉': salary_value})
+                        print(f"[{year}년] 데이터 수집 완료: {salary_value:,}천원")
+                        found = True
+                        break  # 해당 연도 데이터 찾았으면 다음 연도로 이동
+                    except ValueError:
+                        print(f"[{year}년] 연봉 데이터 형식 오류")
+
+        if not found:
+            print(f"[{year}년] '{target_ent_name}' 데이터를 찾을 수 없습니다.")
+
+    except Exception as e:
+        print(f"[{year}년] API 호출 중 오류 발생: {e}")
+
+# 리스트를 DataFrame으로 변환
+df = pd.DataFrame(salary_data)
+
+# ==========================================
+# 3. 데이터 시각화 (막대그래프)
+# ==========================================
+if not df.empty:
+    print("\n--- 시각화 시작 ---")
+
+    # --- 한글 폰트 설정 (Windows/Mac 공용) ---
+    # 시스템에 설치된 폰트 중 한글 폰트(Malgun Gothic 또는 AppleGothic)를 자동으로 찾습니다.
+    if os.name == 'nt':  # Windows
+        font_name = fm.FontProperties(fname="c:/Windows/Fonts/malgun.ttf").get_name()
+    elif os.name == 'posix':  # Mac
+        font_name = fm.FontProperties(fname="/System/Library/Fonts/Supplemental/AppleGothic.ttf").get_name()
+    else:
+        # 그 외 OS는 시스템 기본 폰트 사용 (한글이 깨질 수 있음)
+        font_name = plt.rcParams['font.family']
+
+    plt.rc('font', family=font_name)
+    # 마이너스 부호 깨짐 방지
+    plt.rcParams['axes.unicode_minus'] = False
+
+    # --- 그래프 그리기 ---
+    plt.figure(figsize=(12, 6))  # 그래프 크기 설정
+
+    # 막대그래프 생성
+    bars = plt.bar(df['연도'], df['연봉'], color='skyblue', edgecolor='navy')
+
+    # 그래프 제목 및 축 이름 설정
+    plt.title(f"{target_ent_name} 신입사원 평균연봉 추이 ({start_year}~{end_year})", fontsize=16, fontweight='bold', pad=20)
+    plt.xlabel("연도", fontsize=12)
+    plt.ylabel("평균연봉 (단위: 천원)", fontsize=12)
+
+    # X축 눈금을 연도별로 표시
+    plt.xticks(df['연도'])
+
+    # Y축 눈금 포맷 설정 (천단위 콤마)
+    current_values = plt.gca().get_yticks()
+    plt.gca().set_yticklabels(['{:,.0f}'.format(x) for x in current_values])
+
+    # 막대 위에 값 표시
+    for bar in bars:
+        height = bar.get_height()
+        plt.text(bar.get_x() + bar.get_width() / 2, height,
+                 f'{height:,}',  # 천단위 콤마 포맷
+                 ha='center', va='bottom', fontsize=10, fontweight='bold')
+
+    plt.grid(axis='y', linestyle='--', alpha=0.7)  # Y축 격자 표시
+    plt.tight_layout()  # 여백 조정
+
+    # 그래프 출력
+    plt.show()
+    print("그래프 출력이 완료되었습니다.")
+
+else:
+    print(f"\n조회된 '{target_ent_name}'의 연봉 데이터가 없어 그래프를 그릴 수 없습니다.")

@@ -1,0 +1,42 @@
+import requests
+import pandas as pd
+import xml.etree.ElementTree as ET
+
+url = 'http://apis.data.go.kr/B551982/openApiNewAverPay/openXmlNewAverPay'
+service_key = '발급받은서비스키'
+
+params = {
+    'serviceKey': service_key,
+    'pageNo': '1',
+    'numOfRows': '500',  # 데이터를 충분히 가져오기 위해 조정
+    'ac_year': '2024',
+    'type': 'xml'
+}
+
+try:
+    response = requests.get(url, params=params)
+    root = ET.fromstring(response.content)
+
+    data_list = []
+    for item in root.findall('.//item'):
+        ent_name = item.findtext('ENT_NAME')
+        n_sum = item.findtext('N_SUM')
+
+        if ent_name and n_sum:
+            try:
+                # 수정된 변환 로직
+                salary = int(float(n_sum))
+                data_list.append({'기관명': ent_name, '연봉': salary})
+            except ValueError:
+                continue
+
+    df = pd.DataFrame(data_list)
+    if not df.empty:
+        # 상위 20개 추출
+        result = df.sort_values(by='연봉', ascending=False).head(20)
+        print(result.reset_index(drop=True))
+    else:
+        print("데이터가 없습니다.")
+
+except Exception as e:
+    print(f"오류가 발생했습니다: {e}")
