@@ -32,3 +32,15 @@ Project#4 AI기반 보상/임금관리 People Analytics프로젝트 (2) 검증
   <br>Machine Learning - Random Forest /  XGBoost /  LightGBM 모델비교
   <br>Machine Learning - Feature Importance, SHAP 
  4. 실무질문 - 현재 노동시장의 실시간 데이터를 받아와서 분석하고 싶습니다 - API
+
+Project#5 AI기반 성과관리 People Analytics프로젝트 
+ 1. 성과관리와 관련된 이론
+ 2. MBO와 KPI, OKR과 관련된 내용 AI Summary - OKR의 실행방법론
+ 3. 목표 설정결과 분석 – ANOVA. ANCOVA
+   <br> 실무질문 - 도전적인 목표를 설정할 것인지 결정하고 싶습니다. 
+ 4. 평가자 간 편차 분석 (Rater Variability) – HLM, ICC 
+   <br> 실무질문 - 평가 결과가 평가자의 특성에 따라 왜곡되고 있는지 분석하고 싶습니다.
+ 5. 고성과자 프로파일링
+   <br> 실무질문 – 고성과자를 프로파일링 하여 특정직원이 고성과자가 될 확률을 알고 싶습니다.
+ 6. 360다면평가 텍스트의 AI요약 
+
