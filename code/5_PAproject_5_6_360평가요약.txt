@@ -1,0 +1,67 @@
+import pandas as pd
+from google import genai
+from google.genai import types
+
+# --- 설정 및 초기화 ---
+# 1. API 키를 직접 입력하세요.
+API_KEY = "여기에_사용자님의_API_키를_입력하세요"
+client = genai.Client(api_key=API_KEY)
+MODEL_ID = "gemini-2.0-flash"
+
+# 2. 파일 로드
+file_path = r'C:\Users\user\Desktop\5_Paproject_5_6_360.xlsx'
+df = pd.read_excel(file_path)
+
+def summarize_text(text_list):
+    """
+    여러 개의 피드백 텍스트를 하나로 합쳐 Gemini에게 요약을 요청하는 함수
+    """
+    if not text_list or pd.isna(text_list).all():
+        return "데이터 없음"
+    
+    combined_text = "\n".join([str(t) for t in text_list if pd.notna(t)])
+    
+    prompt = f"""
+    다음은 직원들에 대한 360도 피드백 내용입니다. 
+    이 내용의 핵심적인 강점과 보완점을 요약해서 한국어로 깔끔하게 작성해 주세요.
+    
+    피드백 내용:
+    {combined_text}
+    """
+    
+    try:
+        response = client.models.generate_content(
+            model=MODEL_ID,
+            contents=prompt
+        )
+        return response.text
+    except Exception as e:
+        return f"오류 발생: {str(e)}"
+
+# --- 그룹별 요약 수행 ---
+
+print("데이터 분석 및 요약을 시작합니다...")
+
+# 4. 직원(employee_name)별 요약
+print("- 직원별 요약 중...")
+summary_employee = df.groupby('employee_name')['feedback_text'].apply(list).reset_index()
+summary_employee['summary'] = summary_employee['feedback_text'].apply(summarize_text)
+
+# 5. 부서(department)별 요약
+print("- 부서별 요약 중...")
+summary_dept = df.groupby('department')['feedback_text'].apply(list).reset_index()
+summary_dept['summary'] = summary_dept['feedback_text'].apply(summarize_text)
+
+# 6. 직급(job_level)별 요약
+print("- 직급별 요약 중...")
+summary_level = df.groupby('job_level')['feedback_text'].apply(list).reset_index()
+summary_level['summary'] = summary_level['feedback_text'].apply(summarize_text)
+
+# --- 7. 결과 저장 ---
+output_path = r'C:\Users\user\Desktop\360_Feedback_Summary_Results.xlsx'
+with pd.ExcelWriter(output_path) as writer:
+    summary_employee[['employee_name', 'summary']].to_excel(writer, sheet_name='Employee_Summary', index=False)
+    summary_dept[['department', 'summary']].to_excel(writer, sheet_name='Department_Summary', index=False)
+    summary_level[['job_level', 'summary']].to_excel(writer, sheet_name='Job_Level_Summary', index=False)
+
+print(f"모든 요약 작업이 완료되었습니다! 결과 파일: {output_path}")
