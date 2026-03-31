@@ -1,4 +1,4 @@
-# AI기반 People Analytics project 국민대학교 경영대학 김철영 교수 
+# AI기반 People Analytics project 국민대 김철영 교수
 Source code, data, and AI prompts for the people analytics project
 
 Project#1 AI기반 근태관리 People Analytics프로젝트
