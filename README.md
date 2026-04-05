@@ -32,6 +32,7 @@ Project#4 AI기반 보상/임금관리 People Analytics프로젝트 (2) 검증
   <br>Machine Learning - Random Forest /  XGBoost /  LightGBM 모델비교
   <br>Machine Learning - Feature Importance, SHAP 
  4. 실무질문 - 현재 노동시장의 실시간 데이터를 받아와서 분석하고 싶습니다 - API
+  <br> 공공데이터포털 API를 이용해 한국지방공기업의 신입사원연봉 실시간분석
 
 Project#5 AI기반 성과관리 People Analytics프로젝트 
  1. 성과관리와 관련된 이론
