@@ -8,7 +8,7 @@ Project#1 AI기반 근태관리 People Analytics프로젝트
  3. Apple Watch이용 머신러닝 동작예측
  4. 머신러닝이용 얼굴인식
  5. Google AI이용 동작분석
-   <br>실무질문 - 누가 일하는지 노는지 알고싶습니다. 신체측정/얼굴인식/CCTV분석
+   <br>실무질문 - 누가 일하는지 노는지 알고싶습니다. 신체데이터/얼굴인식/CCTV분석
     
 Project#2 AI기반 인재유지/이직관리 People Analytics프로젝트
  1. Retention 관련 핵심 학술논문 정리 
