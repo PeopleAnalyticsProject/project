@@ -1,0 +1,93 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.preprocessing import LabelEncoder
+
+# 1. 데이터 로드
+# 파일 경로를 본인의 환경에 맞게 수정하세요.
+file_path = r'C:\Users\user\Desktop\6_PAproject_6_3_AI.csv'
+df = pd.read_csv(file_path, encoding='utf-8-sig')
+
+print("데이터 로드 완료. 분석을 시작합니다...")
+
+# 2. 데이터 전처리: 사원별 '성과 변화량(Delta)' 계산
+# 각 사원(emp_id)의 사전(pre) 점수와 사후(post) 점수를 피벗하여 차이를 구함
+pivot_df = df.pivot(index='emp_id', columns='post', values='perf_score')
+pivot_df.columns = ['score_pre', 'score_post']
+pivot_df['delta_score'] = pivot_df['score_post'] - pivot_df['score_pre']
+
+# 사원별 고정 특성(부서, 직급, 근속, 연령, 처치여부) 가져오기
+static_info = df[df['post'] == 0][['emp_id', 'treatment', 'dept', 'grade_num', 'tenure', 'age']].set_index('emp_id')
+final_df = static_info.join(pivot_df['delta_score']).dropna()
+
+# 문자열 변수(부서)를 숫자로 변환 (Label Encoding)
+le = LabelEncoder()
+final_df['dept_encoded'] = le.fit_transform(final_df['dept'])
+
+# 3. T-Learner 모델 구축
+# X: 특징(Covariates), y: 성과 변화량(Outcome)
+features = ['grade_num', 'tenure', 'age', 'dept_encoded']
+X = final_df[features]
+y = final_df['delta_score']
+T = final_df['treatment']
+
+# 교육 받은 집단(T=1) 전용 모델
+model_t1 = RandomForestRegressor(n_estimators=200, random_state=42)
+model_t1.fit(X[T == 1], y[T == 1])
+
+# 교육 안 받은 집단(T=0) 전용 모델
+model_t0 = RandomForestRegressor(n_estimators=200, random_state=42)
+model_t0.fit(X[T == 0], y[T == 0])
+
+# 4. 모든 사원에 대한 개별 처치 효과(ITE) 추정
+# ITE = (교육 받았을 때 예상되는 변화량) - (안 받았을 때 예상되는 변화량)
+pred_delta_t1 = model_t1.predict(X)
+pred_delta_t0 = model_t0.predict(X)
+final_df['ite'] = pred_delta_t1 - pred_delta_t0
+
+# 5. 인사이트 추출: 어떤 특성이 교육 효과에 영향을 주는가?
+# ITE를 종속변수로 하여 다시 학습시켜 변수 중요도(Importance) 확인
+explainer = RandomForestRegressor(n_estimators=200, random_state=42)
+explainer.fit(X, final_df['ite'])
+
+importances = pd.Series(explainer.feature_importances_, index=features).sort_values(ascending=False)
+
+# 6. 결과 시각화 및 리포트 출력
+plt.rc('font', family='Malgun Gothic') # 한글 폰트 설정 (Windows 기준)
+plt.rcParams['axes.unicode_minus'] = False
+
+fig, ax = plt.subplots(1, 2, figsize=(15, 6))
+
+# (1) 변수 중요도 그래프
+sns.barplot(x=importances.values, y=importances.index, ax=ax[0], palette='viridis')
+ax[0].set_title('AI 교육 효과(ITE)를 결정하는 주요 요인')
+ax[0].set_xlabel('중요도 (Feature Importance)')
+
+# (2) 근속연수와 교육 효과의 관계 (Scatter plot)
+sns.regplot(x='tenure', y='ite', data=final_df, ax=ax[1], scatter_kws={'alpha':0.5}, line_kws={'color':'red'})
+ax[1].set_title('근속연수에 따른 AI 교육 기대 효과')
+ax[1].set_ylabel('예상 성과 향상도 (ITE)')
+
+plt.tight_layout()
+plt.show()
+
+# 최종 분석 요약 출력
+print("\n" + "="*50)
+print("   [AI 교육 개인화 타겟팅 분석 보고서]   ")
+print("="*50)
+print(f"1. 전체 평균 교육 효과: {final_df['ite'].mean():.2f}점 향상")
+print("\n2. 교육 효과가 가장 큰 타겟 그룹 특성:")
+top_10_percent = final_df.nlargest(int(len(final_df)*0.1), 'ite')
+print(f"   - 평균 근속연수: {top_10_percent['tenure'].mean():.1f}년")
+print(f"   - 평균 연령: {top_10_percent['age'].mean():.1f}세")
+print(f"   - 주요 직급(grade_num): {top_10_percent['grade_num'].mode()[0]}")
+
+print("\n3. 변수별 영향력 순위:")
+for i, (idx, val) in enumerate(importances.items(), 1):
+    print(f"   {i}위: {idx} ({val:.4f})")
+
+# 상세 결과 파일 저장
+final_df.to_csv('AI_Education_Targeting_List.csv')
+print("\n'AI_Education_Targeting_List.csv' 파일이 저장되었습니다. (사원별 우선순위 명단)")

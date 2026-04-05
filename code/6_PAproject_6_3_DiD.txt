@@ -1,0 +1,95 @@
+import pandas as pd
+import statsmodels.formula.api as smf
+from google import genai
+import numpy as np
+
+# 1. 데이터 로드
+file_path = r'C:\Users\user\Desktop\6_PAproject_6_3_AI.csv'
+df = pd.read_csv(file_path, encoding='utf-8-sig')
+
+# [핵심 수정] 1. emp_id 타입 변환 및 pre_score 자동 생성
+df['emp_id'] = df['emp_id'].astype(str).astype(object)
+
+# 만약 파일에 'pre_score' 컬럼이 없다면, post가 0일 때의 perf_score를 기준으로 생성한다.
+if 'pre_score' not in df.columns:
+    print("알림: 'pre_score' 컬럼이 없어 post=0 데이터를 기반으로 자동 생성한다.")
+    # post가 0인 데이터에서 각 emp_id별 perf_score를 추출하여 매핑한다.
+    baseline_scores = df[df['post'] == 0].set_index('emp_id')['perf_score']
+    df['pre_score'] = df['emp_id'].map(baseline_scores)
+
+# 2. 분석 변수들의 수치화 (존재하는 컬럼만 처리)
+target_cols = ['perf_score', 'treatment', 'post', 'grade_num', 'tenure', 'pre_score']
+available_cols = [c for c in target_cols if c in df.columns]
+
+for col in available_cols:
+    df[col] = pd.to_numeric(df[col], errors='coerce')
+
+# 3. DiD 상호작용항 생성
+df['did_interaction'] = df['treatment'] * df['post']
+
+# 결측치 제거 (분석의 신뢰성을 위해)
+df = df.dropna(subset=['perf_score', 'treatment', 'post', 'did_interaction', 'emp_id'])
+
+# 4. 회귀 모형 설정 및 실행
+# 모형 1: 기본 DiD
+model1 = smf.ols('perf_score ~ treatment + post + did_interaction', data=df).fit()
+
+# 모형 2: 시간 불변 특성(ID 고정효과) 추가
+model2 = smf.ols('perf_score ~ treatment + post + did_interaction + C(emp_id)', data=df).fit()
+
+# 모형 3: 인적자본 + 사전 성과 통제
+# pre_score가 성공적으로 생성/존재할 경우 실행한다.
+model3 = smf.ols('perf_score ~ treatment + post + did_interaction + grade_num + tenure + pre_score', data=df).fit()
+
+# 5. 결과 요약 추출 함수
+def get_model_results(models):
+    summary_text = "### DiD Regression Analysis Results ###\n"
+    for i, mod in enumerate(models, 1):
+        summary_text += f"\n[Model {i}]\n"
+        if 'did_interaction' in mod.params:
+            coef = mod.params['did_interaction']
+            p_val = mod.pvalues['did_interaction']
+            r_sq = mod.rsquared
+            summary_text += f"- DID Coefficient: {coef:.4f}\n"
+            summary_text += f"- P-value: {p_val:.4f}\n"
+            summary_text += f"- R-squared: {r_sq:.4f}\n"
+    return summary_text
+
+analysis_results = get_model_results([model1, model2, model3])
+print(analysis_results)
+
+# 6. Gemini API를 이용한 결과 해석
+def interpret_results(results_str):
+    # 실제 본인의 API 키를 입력하시오.
+    client = genai.Client(api_key="YOUR_GEMINI_API_KEY")
+    
+    prompt = f"""
+    당신은 피플 애널리틱스 전문가이자 대학교수이다. 
+    아래의 3가지 DiD(이중차분법) 분석 결과를 바탕으로 전문적인 리포트를 작성하라.
+    
+    분석 데이터 요약:
+    {results_str}
+    
+    [작성 가이드라인]
+    1. 모든 문장은 '~이다' 체로 작성할 것.
+    2. 모형 1, 2, 3에서 'did_interaction' 계수의 크기와 통계적 유의성(p < 0.05)이 어떻게 변화하는지 비교 분석할 것.
+    3. 통제변수(인적자본, 사전성과)가 추가됨에 따라 처치 효과의 신뢰성이 어떻게 변하는지 설명할 것.
+    4. 최종적으로 AI 교육 프로그램이 성과 향상에 실질적인 효과가 있었는지 결론을 내릴 것.
+    """
+    
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt
+    )
+    
+    return response.text
+
+# 실행
+try:
+    final_report = interpret_results(analysis_results)
+    print("\n" + "="*50)
+    print("Gemini 2.5 Flash 분석 보고서")
+    print("="*50)
+    print(final_report)
+except Exception as e:
+    print(f"\nAPI 해석 도중 오류 발생: {e}")

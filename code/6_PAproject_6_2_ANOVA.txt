@@ -1,0 +1,67 @@
+import pandas as pd
+from scipy import stats
+from google import genai
+import os
+
+# 1. 파일 경로 설정 및 데이터 로드
+file_path = r"C:\Users\user\Desktop\6_PAproject_6_2_Leadership.xlsx"
+
+try:
+    # 엑셀 파일 읽기
+    df = pd.read_excel(file_path)
+    print("파일 로드 성공!")
+    
+    # 2. ANOVA 분석 수행 (Employee_Group별 Post_Training_Score)
+    # 그룹별로 데이터를 분리합니다.
+    groups = [group['Post_Training_Score'].dropna() for name, group in df.groupby('Employee_Group')]
+    
+    # 일원분산분석(One-way ANOVA) 실행
+    f_stat, p_value = stats.f_oneway(*groups)
+    
+    anova_result_str = (
+        f"--- ANOVA 분석 결과 ---\n"
+        f"F-statistic (F-통계량): {f_stat:.4f}\n"
+        f"p-value (유의확률): {p_value:.4f}\n"
+    )
+    print(anova_result_str)
+
+    # 3. Gemini API를 통한 결과 해석
+    # API 키를 여기에 입력하세요.
+    api_key = "YOUR_GEMINI_API_KEY" 
+    
+    client = genai.Client(api_key=api_key)
+    
+    # 프롬프트 구성
+    prompt = f"""
+    당신은 데이터 분석 전문가입니다. 아래의 ANOVA 분석 결과를 해석해 주세요.
+    
+    [분석 배경]
+    - 목적: 직원 그룹(Employee_Group) 간 리더십 교육 후 점수(Post_Training_Score)의 차이가 있는지 검정
+    
+    [분석 결과]
+    {anova_result_str}
+    
+    [요청 사항]
+    1. p-value를 기준으로 통계적 유의성(0.05 기준)을 판단해 주세요.
+    2. 이 결과가 인사 관리(HR) 측면에서 무엇을 의미하는지 설명해 주세요.
+    3. 분석 결과에 따라 향후 어떤 조치를 취하면 좋을지 제언해 주세요.
+    내용은 한국어로 친절하게 설명해 주세요.
+    """
+
+    print("Gemini API에 해석을 요청 중입니다...")
+    
+    # 모델 호출 (사용자 요청에 따라 gemini-2.5-flash 지정)
+    response = client.models.generate_content(
+        model="gemini-2.5-flash", 
+        contents=prompt
+    )
+
+    print("\n" + "="*50)
+    print("Gemini의 결과 해석")
+    print("="*50)
+    print(response.text)
+
+except FileNotFoundError:
+    print(f"오류: 파일을 찾을 수 없습니다. 경로를 확인해주세요: {file_path}")
+except Exception as e:
+    print(f"오류가 발생했습니다: {e}")
